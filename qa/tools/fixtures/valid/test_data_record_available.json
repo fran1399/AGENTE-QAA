@@ -1,0 +1,17 @@
+{
+  "data_id": "TD-001",
+  "description": "valid login credentials for the staging environment",
+  "test_case_ids": ["TC-001"],
+  "required_for": "precondition",
+  "source": "user_provided",
+  "state": "AVAILABLE",
+  "validation": {
+    "method": "successful login on staging",
+    "evidence": ["qa/evidence/sample.png"],
+    "validated": true
+  },
+  "usable": true,
+  "blocks_test_cases": [],
+  "confidence": "HIGH",
+  "notes": "traceability Test Case <-> Test Data"
+}

@@ -1,0 +1,86 @@
+{
+  "suite_id": "SUITE-heal-demo-hc",
+  "app": "demo-heal",
+  "platform": "web",
+  "adapter": "playwright",
+  "description": "Suite demo M-05 en modo HIGH_CONFIDENCE: recuperación controlada de selectores con criterios estrictos (unicidad, visibilidad, identidad funcional y estado). App aislada local (127.0.0.1:4174), sin red externa ni credenciales. Recupera solo en demos aisladas; nunca sobre apps reales sin autorización.",
+  "web_server": {
+    "command": "node automation/scripts/serve-heal-demo.mjs",
+    "url": "http://127.0.0.1:4174/",
+    "timeout_ms": 15000
+  },
+  "requirements": {
+    "task": "SUITE-heal-demo-hc",
+    "scope": "Suite demo M-05 HIGH_CONFIDENCE - app local aislada 127.0.0.1:4174",
+    "platform": "web",
+    "need": {
+      "runtime": { "python": true, "node": true, "npm": true },
+      "node_packages": ["@playwright/test"],
+      "adapters": ["playwright"],
+      "browsers": ["chromium"],
+      "tools": ["node", "npm"],
+      "target": { "url": "http://127.0.0.1:4174/", "method": "GET", "ok_status_max": 499, "timeout_ms": 5000 },
+      "auto_healing": { "mode": "HIGH_CONFIDENCE" },
+      "requires_evidence": true,
+      "qa_reviewer": { "required": false }
+    }
+  },
+  "test_cases": [
+    {
+      "test_case_id": "TC-HEAL-2",
+      "title": "TC-HEAL-2: recupera con el atributo de prueba estable y verifica la recuperación",
+      "spec": "automation/specs/heal-demo/hc.spec.ts",
+      "test_name": "TC-HEAL-2: recupera con el atributo de prueba estable y verifica la recuperación",
+      "expected_result": "Con #search-box roto (v=1), se recupera [data-testid=search-field] (stable_attribute), status RECOVERED, used_recovery=true, post-verificación POST_VERIFICATION_PASS, confianza HIGH, ai_calls=0 y el valor llega al input recuperado"
+    },
+    {
+      "test_case_id": "TC-HEAL-3",
+      "title": "TC-HEAL-3: ambigüedad no recuperable -> AMBIGUOUS",
+      "spec": "automation/specs/heal-demo/hc.spec.ts",
+      "test_name": "TC-HEAL-3: ambigüedad no recuperable -> AMBIGUOUS",
+      "expected_result": "Con dos placeholders idénticos (v=3), el intento queda AMBIGUOUS con candidates no únicos y used_recovery=false: sin candidato inequívoco no hay recuperación"
+    },
+    {
+      "test_case_id": "TC-HEAL-4",
+      "title": "TC-HEAL-4: mismo atributo, función distinta -> REJECTED",
+      "spec": "automation/specs/heal-demo/hc.spec.ts",
+      "test_name": "TC-HEAL-4: mismo atributo, función distinta -> REJECTED",
+      "expected_result": "Con data-testid=search-field sobre un div[role=button] (v=4), el candidato único se rechaza por función distinta (REJECTED) y used_recovery=false: nunca se sustituye un elemento por otro de distinta función"
+    },
+    {
+      "test_case_id": "TC-HEAL-6",
+      "title": "TC-HEAL-6: la acción mutante recuperada con efecto incierto no se repite",
+      "spec": "automation/specs/heal-demo/hc.spec.ts",
+      "test_name": "TC-HEAL-6: la acción mutante recuperada con efecto incierto no se repite",
+      "expected_result": "La acción de compra recuperada (v=7) no se re-ejecuta cuando no se puede determinar si el efecto ya se aplicó (status RECOVERED con duplicate_prevented=true, contador intacto); con verificación de resultado y efecto no aplicado la acción se ejecuta una sola vez y el contador pasa de 0 a 1"
+    },
+    {
+      "test_case_id": "TC-HEAL-7",
+      "title": "TC-HEAL-7: reutiliza la alternativa almacenada en el mismo run sin IA",
+      "spec": "automation/specs/heal-demo/hc.spec.ts",
+      "test_name": "TC-HEAL-7: reutiliza la alternativa almacenada en el mismo run sin IA",
+      "expected_result": "Después de TC-HEAL-2, resolver #search-box devuelve REUSED con reused_from_store=true, strategy stored_reuse y 1 solo candidato: reutilización determinista verificada contra el DOM real y sin llamadas IA"
+    },
+    {
+      "test_case_id": "TC-HEAL-8",
+      "title": "TC-HEAL-8: la alternativa almacenada obsoleta se invalida y se recupera de nuevo",
+      "spec": "automation/specs/heal-demo/hc.spec.ts",
+      "test_name": "TC-HEAL-8: la alternativa almacenada obsoleta se invalida y se recupera de nuevo",
+      "expected_result": "Con la alternativa almacenada ya inexistente (v=5), el candidato stored_reuse se rechaza y se marca STALE con causa registrada; el motor recupera de nuevo con un candidato nuevo y post-verifica (RECOVERED)"
+    },
+    {
+      "test_case_id": "TC-HEAL-11",
+      "title": "TC-HEAL-11: sin evidencia de identidad inequívoca no se recupera (NO_CANDIDATE)",
+      "spec": "automation/specs/heal-demo/hc.spec.ts",
+      "test_name": "TC-HEAL-11: sin evidencia de identidad inequívoca no se recupera (NO_CANDIDATE)",
+      "expected_result": "Con un widget sin evidencia de identidad (v=8) el intento queda NO_CANDIDATE con used_recovery=false; con un placeholder único (v=2) la recuperación PROCEDE con estrategia label_placeholder: los criterios estrictos gobiernan siempre"
+    },
+    {
+      "test_case_id": "TC-HEAL-13",
+      "title": "TC-HEAL-13: una excepción del callback de resultado no re-ejecuta la acción mutante",
+      "spec": "automation/specs/heal-demo/hc.spec.ts",
+      "test_name": "TC-HEAL-13: una excepción del callback de resultado no re-ejecuta la acción mutante",
+      "expected_result": "Con #buy-now roto (v=7) y un callback de resultado que lanza excepción, no se puede determinar si el efecto ya se aplicó: el intento queda RECOVERED con duplicate_prevented=true, la acción mutante NO se re-ejecuta (cart sigue en 0) y el intento queda trazable con causa registrada"
+    }
+  ]
+}

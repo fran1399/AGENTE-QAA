@@ -1,0 +1,20 @@
+{
+  "classification_id": "FC-001",
+  "test_id": "TC-001",
+  "result_status": "FAIL",
+  "failure_classification": "APP_BUG",
+  "analysis_inputs": {
+    "expected_result": "heading visible",
+    "actual_result": "heading missing",
+    "evidence": ["qa/evidence/sample.png"],
+    "execution_traceability": "qa/tests/sample_trace.json TR-001",
+    "test_data": [],
+    "context": "no test data involved",
+    "memory_considered": []
+  },
+  "outcome": "BUG_CONFIRMED",
+  "related_bug_id": "BUG-001",
+  "rationale": "the heading is absent from the DOM in two runs",
+  "confidence": "HIGH",
+  "confidence_rationale": "reproduced twice"
+}

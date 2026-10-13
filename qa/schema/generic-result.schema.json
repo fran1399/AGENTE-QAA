@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Generic Result",
+  "description": "Structured output of any agent. Canonical source: docs/AGENT-CONTRACTS.md.",
+  "type": "object",
+  "properties": {
+    "agent": {
+      "enum": ["qa-lead", "test-designer", "exploratory-qa", "risk-analyst", "test-executor", "test-data", "bug-analyst", "qa-reviewer"]
+    },
+    "task": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["success", "partial", "failed", "blocked"] },
+    "findings": { "type": "array" },
+    "evidence": { "$ref": "_common.schema.json#/$defs/evidenceList" },
+    "evidence_links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "finding_id": { "type": "string" },
+          "path": { "type": "string", "minLength": 1 },
+          "type": { "$ref": "_common.schema.json#/$defs/evidenceType" },
+          "notes": { "type": "string" }
+        },
+        "required": ["finding_id", "path"],
+        "additionalProperties": true
+      }
+    },
+    "risks": { "type": "array" },
+    "confidence": { "$ref": "_common.schema.json#/$defs/confidence" },
+    "confidence_rationale": { "type": "string", "minLength": 1 },
+    "conclusion": { "type": "string", "minLength": 1 },
+    "uncertainties": { "type": "array" },
+    "expected_result": { "type": "string" },
+    "actual_result": { "type": "string" },
+    "recommendation": { "type": "string" },
+    "next_action": { "type": "string" }
+  },
+  "required": ["agent", "task", "status", "conclusion", "confidence", "confidence_rationale"],
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "success" } }, "required": ["status"] },
+      "then": { "properties": { "conclusion": { "type": "string", "minLength": 1 } } }
+    }
+  ],
+  "additionalProperties": true
+}

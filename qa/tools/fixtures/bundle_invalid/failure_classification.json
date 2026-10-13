@@ -1,0 +1,10 @@
+{
+  "classification_id": "FC-001",
+  "test_id": "TC-404",
+  "result_status": "FAIL",
+  "failure_classification": "APP_BUG",
+  "outcome": "TEST_FAILED",
+  "rationale": "TC-404 does not exist in this bundle: dangling reference on purpose",
+  "confidence": "LOW",
+  "confidence_rationale": "reference test"
+}

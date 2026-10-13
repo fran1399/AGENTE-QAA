@@ -1,0 +1,37 @@
+{
+  "suite_id": "SUITE-heal-demo-hc-fail",
+  "app": "demo-heal",
+  "platform": "web",
+  "adapter": "playwright",
+  "description": "Suite demo M-05 (HIGH_CONFIDENCE) para preservación de FAIL: la recuperación del selector NO convierte el FAIL de negocio en PASS. Esta suite FALLA por diseño (TC-HEAL-5). App aislada local (127.0.0.1:4174), sin red externa ni credenciales.",
+  "web_server": {
+    "command": "node automation/scripts/serve-heal-demo.mjs",
+    "url": "http://127.0.0.1:4174/",
+    "timeout_ms": 15000
+  },
+  "requirements": {
+    "task": "SUITE-heal-demo-hc-fail",
+    "scope": "Suite demo M-05 HIGH_CONFIDENCE con FAIL intencional - app local aislada 127.0.0.1:4174",
+    "platform": "web",
+    "need": {
+      "runtime": { "python": true, "node": true, "npm": true },
+      "node_packages": ["@playwright/test"],
+      "adapters": ["playwright"],
+      "browsers": ["chromium"],
+      "tools": ["node", "npm"],
+      "target": { "url": "http://127.0.0.1:4174/", "method": "GET", "ok_status_max": 499, "timeout_ms": 5000 },
+      "auto_healing": { "mode": "HIGH_CONFIDENCE" },
+      "requires_evidence": true,
+      "qa_reviewer": { "required": false }
+    }
+  },
+  "test_cases": [
+    {
+      "test_case_id": "TC-HEAL-5",
+      "title": "TC-HEAL-5: un FAIL real se conserva aunque el selector se recupere",
+      "spec": "automation/specs/heal-demo/hc-fail.spec.ts",
+      "test_name": "TC-HEAL-5: un FAIL real se conserva aunque el selector se recupere",
+      "expected_result": "El selector se recupera (used_recovery=true, post-verificación PASS) pero la aserción de negocio #total-products=7 falla porque la demo muestra 3: el auto-healing NUNCA convierte FAIL en PASS ni cambia Expected Results"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "classification_id": "FC-001",
+  "test_id": "TC-001",
+  "result_status": "FAIL",
+  "failure_classification": "MAYBE",
+  "outcome": "TEST_FAILED",
+  "rationale": "clasificacion invalida",
+  "confidence": "LOW",
+  "confidence_rationale": "insufficient"
+}

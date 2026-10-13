@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Test Data Record",
+  "description": "Test Data identification/validation record. Canonical source: docs/AGENT-CONTRACTS.md. AVAILABLE requires validated evidence; UNVERIFIED is never AVAILABLE; values are never invented.",
+  "type": "object",
+  "properties": {
+    "data_id": { "type": "string", "pattern": "^TD-[A-Za-z0-9._-]+$" },
+    "description": { "type": "string", "minLength": 1 },
+    "test_case_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "required_for": { "enum": ["precondition", "step", "input"] },
+    "source": { "enum": ["user_provided", "application_generated", "qa_prepared", "unknown"] },
+    "state": { "enum": ["AVAILABLE", "MISSING", "INVALID", "EXPIRED", "CONSUMED", "UNVERIFIED", "NOT_APPLICABLE"] },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "method": { "type": "string" },
+        "evidence": { "$ref": "_common.schema.json#/$defs/evidenceList" },
+        "validated": { "type": "boolean" }
+      },
+      "required": ["validated"],
+      "additionalProperties": true
+    },
+    "usable": { "type": "boolean" },
+    "blocks_test_cases": { "type": "array", "items": { "type": "string" } },
+    "confidence": { "$ref": "_common.schema.json#/$defs/confidence" },
+    "notes": { "type": "string" }
+  },
+  "required": ["data_id", "description", "test_case_ids", "state", "usable", "confidence"],
+  "allOf": [
+    {
+      "description": "AVAILABLE requires validated evidence and usable=true.",
+      "if": { "properties": { "state": { "const": "AVAILABLE" } }, "required": ["state"] },
+      "then": {
+        "properties": {
+          "usable": { "const": true },
+          "validation": {
+            "properties": {
+              "validated": { "const": true },
+              "evidence": { "minItems": 1 }
+            },
+            "required": ["validated", "evidence"]
+          }
+        },
+        "required": ["validation"]
+      }
+    },
+    {
+      "description": "MISSING/INVALID/EXPIRED/CONSUMED/UNVERIFIED data is not usable.",
+      "if": { "properties": { "state": { "enum": ["MISSING", "INVALID", "EXPIRED", "CONSUMED", "UNVERIFIED"] } }, "required": ["state"] },
+      "then": { "properties": { "usable": { "const": false } } }
+    }
+  ],
+  "additionalProperties": true
+}

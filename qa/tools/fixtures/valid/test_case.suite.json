@@ -1,0 +1,23 @@
+{
+  "suite_id": "TS-TEST-001",
+  "application": "https://example.test/",
+  "scope": "schema fixtures",
+  "test_cases": [
+    {
+      "test_case_id": "TC-001",
+      "title": "Sample valid case",
+      "objective": "Validate the Test Case schema",
+      "preconditions": ["app reachable"],
+      "test_data": [],
+      "steps": ["open page", "check heading"],
+      "expected_result": "heading visible",
+      "actual_result": "heading visible",
+      "status": "PASS",
+      "severity": "LOW",
+      "priority": "P3",
+      "evidence": ["qa/evidence/sample.png"],
+      "confidence": "HIGH",
+      "confidence_rationale": "direct observation with screenshot"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "memory_id": "MEM-001",
+  "related_bug_id": "BUG-001",
+  "related_test_case_id": "TC-001",
+  "area": "cart",
+  "cause": "",
+  "failure_classification": "APP_BUG",
+  "test_data_refs": [],
+  "retest_refs": ["RT-001"],
+  "regression_refs": [],
+  "symptoms": ["counter not updating"],
+  "hypothesis": "",
+  "evidence_refs": ["qa/evidence/sample.png"],
+  "confidence": "HIGH",
+  "frequency": 1,
+  "last_seen": "2026-10-08",
+  "status": "RELEVANT",
+  "regression_risk": "HIGH",
+  "tags": ["cart"]
+}

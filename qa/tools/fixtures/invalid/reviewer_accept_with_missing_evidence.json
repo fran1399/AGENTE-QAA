@@ -1,0 +1,11 @@
+{
+  "verdict": "ACCEPT",
+  "confidence": "HIGH",
+  "confidence_rationale": "aceptado",
+  "reasoning_summary": "should fail: ACCEPT with missing evidence",
+  "missing_evidence": [
+    {"path": "qa/evidence/missing.png", "reason": "screenshot not provided"}
+  ],
+  "evidence_references": ["qa/evidence/sample.png"],
+  "requires_additional_evidence": false
+}

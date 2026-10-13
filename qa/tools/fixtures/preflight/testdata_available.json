@@ -1,0 +1,15 @@
+{
+  "data_id": "TD-PF-1",
+  "description": "Example precondition data used by the pre-flight test suite",
+  "test_case_ids": ["TC-PF-1"],
+  "required_for": "precondition",
+  "source": "qa_prepared",
+  "state": "AVAILABLE",
+  "validation": {
+    "method": "validated with local fixture (no real application)",
+    "evidence": ["qa/tools/fixtures/preflight/testdata_available.json"],
+    "validated": true
+  },
+  "usable": true,
+  "confidence": "HIGH"
+}

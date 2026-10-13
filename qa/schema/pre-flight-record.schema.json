@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pre-flight Record",
+  "description": "Pre-flight checklist result. Canonical source: docs/AGENT-CONTRACTS.md. A BLOCKED pre-flight must list causes; READY cannot carry blocked reasons. Each check may carry the M-04 detector fields (capability, capability_state, observed_state, required, observed, action, detail, availability_source), which are validated when present and optional for backward compatibility.",
+  "type": "object",
+  "properties": {
+    "preflight_id": { "type": "string", "pattern": "^PF-[A-Za-z0-9._-]+$" },
+    "scope": { "type": "string", "minLength": 1 },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "check": { "enum": ["target_accessible", "credentials_available", "tools_available", "adapter_available", "test_data_available", "config_dependencies"] },
+          "status": { "enum": ["OK", "BLOCKED", "NOT_APPLICABLE", "UNVERIFIED", "WARN"] },
+          "capability": { "type": "string", "minLength": 1 },
+          "capability_state": { "$ref": "_common.schema.json#/$defs/capabilityState" },
+          "observed_state": { "$ref": "_common.schema.json#/$defs/capabilityState" },
+          "required": { "type": "boolean" },
+          "observed": { "type": "string" },
+          "action": { "type": "string", "minLength": 1 },
+          "detail": { "type": "string", "minLength": 1 },
+          "availability_source": { "enum": ["declarative_signal", "direct_probe"] },
+          "evidence": { "$ref": "_common.schema.json#/$defs/evidenceList" },
+          "notes": { "type": "string" }
+        },
+        "required": ["check", "status"],
+        "additionalProperties": true
+      }
+    },
+    "result": { "enum": ["READY", "BLOCKED"] },
+    "blocked_reasons": { "type": "array", "items": { "type": "string" } },
+    "confidence": { "$ref": "_common.schema.json#/$defs/confidence" },
+    "notes": { "type": "string" }
+  },
+  "required": ["preflight_id", "scope", "checks", "result", "confidence"],
+  "allOf": [
+    {
+      "description": "BLOCKED requires at least one blocked reason.",
+      "if": { "properties": { "result": { "const": "BLOCKED" } }, "required": ["result"] },
+      "then": { "properties": { "blocked_reasons": { "minItems": 1 } }, "required": ["blocked_reasons"] }
+    },
+    {
+      "description": "READY cannot carry blocked reasons.",
+      "if": { "properties": { "result": { "const": "READY" } }, "required": ["result"] },
+      "then": { "properties": { "blocked_reasons": { "maxItems": 0 } } }
+    }
+  ],
+  "additionalProperties": true
+}

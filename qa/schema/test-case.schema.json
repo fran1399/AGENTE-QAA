@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Test Case",
+  "description": "A single Test Case record. Canonical source: docs/AGENT-CONTRACTS.md. Suite artifacts (for example qa/tests/dcshoes_tc.json) wrap these records under a 'test_cases' array; the validator extracts them.",
+  "type": "object",
+  "properties": {
+    "test_case_id": { "type": "string", "pattern": "^TC-[A-Za-z0-9._-]+$" },
+    "title": { "type": "string", "minLength": 1 },
+    "objective": { "type": "string", "minLength": 1 },
+    "preconditions": { "type": "array", "items": { "type": "string" } },
+    "test_data": { "type": "array" },
+    "steps": { "type": "array", "items": { "type": "string" } },
+    "expected_result": { "type": "string", "minLength": 1 },
+    "actual_result": { "type": "string" },
+    "status": { "enum": ["PASS", "FAIL", "BLOCKED", "SKIPPED", "NOT_EXECUTED"] },
+    "severity": { "$ref": "_common.schema.json#/$defs/severity" },
+    "priority": { "$ref": "_common.schema.json#/$defs/priority" },
+    "evidence": { "$ref": "_common.schema.json#/$defs/evidenceList" },
+    "confidence": { "$ref": "_common.schema.json#/$defs/confidence" },
+    "confidence_rationale": { "type": "string", "minLength": 1 },
+    "risk": { "type": "string" },
+    "traceability": { "$ref": "_common.schema.json#/$defs/traceability" },
+    "notes": { "type": "string" }
+  },
+  "required": ["test_case_id", "title", "objective", "expected_result", "status", "severity", "priority", "confidence", "confidence_rationale"],
+  "allOf": [
+    {
+      "description": "PASS/FAIL require explicit evidence and an observed actual result (NO EVIDENCE = NO CONFIRMED RESULT).",
+      "if": { "properties": { "status": { "enum": ["PASS", "FAIL"] } }, "required": ["status"] },
+      "then": {
+        "properties": {
+          "evidence": { "minItems": 1 },
+          "actual_result": { "type": "string", "minLength": 1 }
+        },
+        "required": ["evidence", "actual_result"]
+      }
+    }
+  ],
+  "additionalProperties": true
+}

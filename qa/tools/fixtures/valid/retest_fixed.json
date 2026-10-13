@@ -1,0 +1,13 @@
+{
+  "retest_id": "RT-001",
+  "related_bug_id": "BUG-001",
+  "related_test_case_id": "TC-001",
+  "original_result": "FAIL",
+  "retest_result": "PASS",
+  "fix_status": "FIXED",
+  "evidence": ["qa/evidence/sample.png"],
+  "impact_assessment": "cart area, depends on checkout flow",
+  "regression_recommended": true,
+  "confidence": "HIGH",
+  "notes": "current evidence only"
+}

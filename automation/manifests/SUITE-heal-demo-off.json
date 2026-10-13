@@ -1,0 +1,44 @@
+{
+  "suite_id": "SUITE-heal-demo-off",
+  "app": "demo-heal",
+  "platform": "web",
+  "adapter": "playwright",
+  "description": "Suite demo M-05 en modo OFF: el runner ejecuta sin recuperación de selectores y registra trazabilidad NOT_ATTEMPTED. App aislada local (127.0.0.1:4174), sin red externa ni credenciales.",
+  "web_server": {
+    "command": "node automation/scripts/serve-heal-demo.mjs",
+    "url": "http://127.0.0.1:4174/",
+    "timeout_ms": 15000
+  },
+  "requirements": {
+    "task": "SUITE-heal-demo-off",
+    "scope": "Suite demo M-05 OFF - app local aislada 127.0.0.1:4174",
+    "platform": "web",
+    "need": {
+      "runtime": { "python": true, "node": true, "npm": true },
+      "node_packages": ["@playwright/test"],
+      "adapters": ["playwright"],
+      "browsers": ["chromium"],
+      "tools": ["node", "npm"],
+      "target": { "url": "http://127.0.0.1:4174/", "method": "GET", "ok_status_max": 499, "timeout_ms": 5000 },
+      "auto_healing": { "mode": "OFF" },
+      "requires_evidence": true,
+      "qa_reviewer": { "required": false }
+    }
+  },
+  "test_cases": [
+    {
+      "test_case_id": "TC-HEAL-1",
+      "title": "TC-HEAL-1: el selector original válido no requiere recuperación",
+      "spec": "automation/specs/heal-demo/off.spec.ts",
+      "test_name": "TC-HEAL-1: el selector original válido no requiere recuperación",
+      "expected_result": "Con el selector original resolviendo (v=0), el estado es ORIGINAL_OK, used_recovery=false y el relleno se ejecuta con el selector original intacto"
+    },
+    {
+      "test_case_id": "TC-HEAL-9",
+      "title": "TC-HEAL-9: el modo OFF registra NOT_ATTEMPTED y no intenta recuperar",
+      "spec": "automation/specs/heal-demo/off.spec.ts",
+      "test_name": "TC-HEAL-9: el modo OFF registra NOT_ATTEMPTED y no intenta recuperar",
+      "expected_result": "Con modo OFF y selector roto (v=1), el intento queda NOT_ATTEMPTED con 0 candidatos evaluados, used_recovery=false y no se escribe el store ni se actúa sobre la página"
+    }
+  ]
+}

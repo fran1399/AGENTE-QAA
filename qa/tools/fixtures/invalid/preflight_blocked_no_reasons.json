@@ -1,0 +1,9 @@
+{
+  "preflight_id": "PF-002",
+  "scope": "TS-TEST-001 web suite",
+  "checks": [
+    {"check": "tools_available", "status": "BLOCKED", "evidence": [], "notes": "browser missing"}
+  ],
+  "result": "BLOCKED",
+  "confidence": "HIGH"
+}

@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Common Definitions",
+  "description": "Shared definitions for QA contract schemas. Referenced by the other schemas as _common.schema.json#/$defs/<name>. Canonical source: docs/AGENT-CONTRACTS.md.",
+  "$defs": {
+    "confidence": {
+      "description": "Confidence level (AGENT-CONTRACTS / VALIDATION-POLICY).",
+      "enum": ["HIGH", "MEDIUM", "LOW"]
+    },
+    "severity": {
+      "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
+    },
+    "priority": {
+      "enum": ["P0", "P1", "P2", "P3"]
+    },
+    "probability": {
+      "enum": ["HIGH", "MEDIUM", "LOW"]
+    },
+    "failureCategory": {
+      "description": "Failure Classification categories. FAIL is not APP_BUG automatically.",
+      "enum": ["APP_BUG", "TEST_DATA", "TEST_INFRASTRUCTURE", "BLOCKED", "INSUFFICIENT_EVIDENCE"]
+    },
+    "resultStatus": {
+      "description": "Execution result status for a Test Result.",
+      "enum": ["PASS", "FAIL", "BLOCKED", "SKIPPED"]
+    },
+    "evidenceType": {
+      "enum": ["screenshot", "trace", "log", "console", "network", "text", "other"]
+    },
+    "evidenceItem": {
+      "description": "An evidence reference. Either a plain string (path or traceable reference) or a structured object. The string form is kept for compatibility with existing artifacts in qa/.",
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        {
+          "type": "object",
+          "properties": {
+            "path": { "type": "string", "minLength": 1 },
+            "type": { "$ref": "#/$defs/evidenceType" },
+            "notes": { "type": "string" }
+          },
+          "required": ["path"],
+          "additionalProperties": true
+        }
+      ]
+    },
+    "evidenceList": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/evidenceItem" }
+    },
+    "capabilityState": {
+      "description": "Pre-flight capability state (M-04). Mirrors the vocabulary in docs/PRE-FLIGHT-CAPABILITIES.md; validation never transforms it. AVAILABLE/NOT_REQUIRED never block; REQUIRES_CONFIGURATION/NOT_INSTALLED/UNVERIFIED on a required check make the pre-flight BLOCKED. PROBE_DENIED/PROBE_INCONCLUSIVE are non-blocking WARNs that only appear when need.target.browser_fallback is declared: the HTTP probe could not confirm access, so accessibility is decided by the browser navigation evidence, never by the probe.",
+      "enum": ["AVAILABLE", "REQUIRES_CONFIGURATION", "NOT_INSTALLED", "NOT_REQUIRED", "UNVERIFIED", "PROBE_DENIED", "PROBE_INCONCLUSIVE"]
+    },
+    "traceability": {
+      "description": "Test Case traceability (requirement / risk / Test Data).",
+      "type": "object",
+      "properties": {
+        "requirement": { "type": "string" },
+        "risk_id": { "type": "string" },
+        "test_data_id": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  }
+}

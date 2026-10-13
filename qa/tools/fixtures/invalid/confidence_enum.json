@@ -1,0 +1,7 @@
+{
+  "test_id": "TC-001",
+  "status": "PASS",
+  "evidence": ["qa/evidence/sample.png"],
+  "confidence": "VERY_HIGH",
+  "confidence_rationale": "observado"
+}

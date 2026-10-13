@@ -1,0 +1,43 @@
+{
+  "suite_id": "SUITE-demo-qaa-web",
+  "app": "demo-qaa",
+  "platform": "web",
+  "adapter": "playwright",
+  "description": "Suite demo Web (Playwright Test) contra la app aislada local (sin red externa, sin credenciales). El runner levanta el servidor demo antes del Pre-flight y lo detiene al final.",
+  "web_server": {
+    "command": "node automation/scripts/serve-demo.mjs",
+    "url": "http://127.0.0.1:4173/",
+    "timeout_ms": 15000
+  },
+  "requirements": {
+    "task": "SUITE-demo-qaa-web",
+    "scope": "Suite demo Web - app local aislada 127.0.0.1:4173",
+    "platform": "web",
+    "need": {
+      "runtime": { "python": true, "node": true, "npm": true },
+      "node_packages": ["@playwright/test"],
+      "adapters": ["playwright"],
+      "browsers": ["chromium"],
+      "tools": ["node", "npm"],
+      "target": { "url": "http://127.0.0.1:4173/", "method": "GET", "ok_status_max": 499, "timeout_ms": 5000 },
+      "requires_evidence": true,
+      "qa_reviewer": { "required": false }
+    }
+  },
+  "test_cases": [
+    {
+      "test_case_id": "TC-DEMO-WEB-1",
+      "title": "Home renders the product catalog",
+      "spec": "automation/specs/demo-web/site.spec.ts",
+      "test_name": "home renders the product catalog",
+      "expected_result": "La Home muestra el heading 'Demo Store QA', estado 'ready' y un catálogo de al menos 3 productos, cada uno con nombre y precio positivo"
+    },
+    {
+      "test_case_id": "TC-DEMO-WEB-2",
+      "title": "Add to cart updates the counter",
+      "spec": "automation/specs/demo-web/site.spec.ts",
+      "test_name": "add to cart updates the counter",
+      "expected_result": "El contador del carrito pasa de 0 a 1 al agregar un producto desde la Home"
+    }
+  ]
+}

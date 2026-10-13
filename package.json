@@ -1,0 +1,31 @@
+{
+  "name": "agente-qaa-automation",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Reusable automation base (Playwright Test) for the OpenCode QA Agent. Governance stays in QA Core (Python + contracts); this package is the future runner (M-03) and is intentionally decoupled from the qa/ JSON artifacts.",
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0 <25.0.0",
+    "npm": ">=11.0.0"
+  },
+  "scripts": {
+    "verify:env": "node automation/scripts/verify-env.mjs",
+    "typecheck": "tsc --noEmit",
+    "browsers:install": "playwright install chromium",
+    "browsers:install:all": "playwright install",
+    "build:runner": "tsc -p automation/runner/tsconfig.json",
+    "pretest": "npm run build:runner",
+    "test": "playwright test",
+    "test:smoke": "playwright test automation/tests/infra.smoke.spec.ts",
+    "presuite": "npm run build:runner",
+    "suite": "node automation/.dist/runner/runner.js",
+    "suite:demo-web": "npm run suite -- --suite SUITE-demo-qaa-web --out automation/.runs/suite-demo-web",
+    "suite:demo-api": "npm run suite -- --suite SUITE-demo-qaa-api --out automation/.runs/suite-demo-api",
+    "report": "playwright show-report automation/.artifacts/playwright-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.0",
+    "@types/node": "24.19.1",
+    "typescript": "5.9.3"
+  }
+}

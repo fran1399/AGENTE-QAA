@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Failure Classification",
+  "description": "Formal classification applied to every FAIL before confirming a Bug. Canonical source: docs/AGENT-CONTRACTS.md. FAIL does not equal APP_BUG automatically.",
+  "type": "object",
+  "properties": {
+    "classification_id": { "type": "string", "pattern": "^FC-[A-Za-z0-9._-]+$" },
+    "test_id": { "type": "string", "minLength": 1 },
+    "result_status": { "const": "FAIL" },
+    "failure_classification": { "$ref": "_common.schema.json#/$defs/failureCategory" },
+    "analysis_inputs": {
+      "type": "object",
+      "properties": {
+        "expected_result": { "type": "string" },
+        "actual_result": { "type": "string" },
+        "evidence": { "$ref": "_common.schema.json#/$defs/evidenceList" },
+        "execution_traceability": { "type": "string" },
+        "test_data": { "type": "array" },
+        "context": { "type": "string" },
+        "memory_considered": { "type": "array" }
+      },
+      "additionalProperties": true
+    },
+    "outcome": { "enum": ["TEST_FAILED", "CAUSE_IDENTIFIED", "BUG_CONFIRMED", "BLOCKED", "INSUFFICIENT_EVIDENCE"] },
+    "related_bug_id": { "type": "string" },
+    "rationale": { "type": "string", "minLength": 1 },
+    "confidence": { "$ref": "_common.schema.json#/$defs/confidence" },
+    "confidence_rationale": { "type": "string", "minLength": 1 }
+  },
+  "required": ["classification_id", "test_id", "result_status", "failure_classification", "outcome", "rationale", "confidence", "confidence_rationale"],
+  "allOf": [
+    {
+      "description": "INSUFFICIENT_EVIDENCE cannot produce a BUG_CONFIRMED outcome.",
+      "if": { "properties": { "failure_classification": { "const": "INSUFFICIENT_EVIDENCE" } }, "required": ["failure_classification"] },
+      "then": { "properties": { "outcome": { "enum": ["TEST_FAILED", "INSUFFICIENT_EVIDENCE", "BLOCKED"] } } }
+    },
+    {
+      "description": "BUG_CONFIRMED implies an APP_BUG classification and a related Bug Record.",
+      "if": { "properties": { "outcome": { "const": "BUG_CONFIRMED" } }, "required": ["outcome"] },
+      "then": {
+        "properties": { "failure_classification": { "const": "APP_BUG" } },
+        "required": ["related_bug_id"]
+      }
+    },
+    {
+      "description": "BLOCKED classification cannot produce BUG_CONFIRMED.",
+      "if": { "properties": { "failure_classification": { "const": "BLOCKED" } }, "required": ["failure_classification"] },
+      "then": { "properties": { "outcome": { "enum": ["TEST_FAILED", "BLOCKED", "INSUFFICIENT_EVIDENCE"] } } }
+    }
+  ],
+  "additionalProperties": true
+}

@@ -1,0 +1,10 @@
+{
+  "retest_id": "RT-001",
+  "related_bug_id": "BUG-999",
+  "related_test_case_id": "TC-001",
+  "original_result": "FAIL",
+  "retest_result": "BLOCKED",
+  "fix_status": "INDETERMINATE",
+  "confidence": "LOW",
+  "notes": "BUG-999 does not exist in this bundle: dangling reference on purpose"
+}

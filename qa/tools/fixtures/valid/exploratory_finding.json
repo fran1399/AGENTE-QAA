@@ -1,0 +1,14 @@
+{
+  "finding_id": "EF-001",
+  "scope": "Home navigation",
+  "observation": "the search button is transiently disabled while typing",
+  "hypothesis": "the autocomplete widget disables submit during the AJAX request",
+  "evidence": ["qa/evidence/sample.png"],
+  "expected_result": "search usable",
+  "actual_result": "search usable after the request completes",
+  "conclusion": "transient state, not a defect",
+  "status": "CONFIRMED",
+  "confidence": "HIGH",
+  "uncertainties": [],
+  "risk": "R-004"
+}

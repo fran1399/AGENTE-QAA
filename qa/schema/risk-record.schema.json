@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Risk Record",
+  "description": "Risk assessment record. Canonical source: docs/AGENT-CONTRACTS.md and docs/VALIDATION-POLICY.md. HIGH/CRITICAL risk requires the QA Reviewer.",
+  "type": "object",
+  "properties": {
+    "risk_id": { "type": "string", "pattern": "^R-[A-Za-z0-9._-]+$" },
+    "risk": { "type": "string", "minLength": 1 },
+    "category": { "enum": ["functional", "technical", "integration", "regression", "other"] },
+    "impact": { "$ref": "_common.schema.json#/$defs/severity" },
+    "probability": { "$ref": "_common.schema.json#/$defs/probability" },
+    "risk_level": { "$ref": "_common.schema.json#/$defs/severity" },
+    "priority": { "$ref": "_common.schema.json#/$defs/priority" },
+    "rationale": { "type": "string", "minLength": 1 },
+    "action_required": { "enum": ["none", "test", "mitigate", "block", "retest", "review"] },
+    "required_evidence": { "type": "array", "items": { "type": "string" } },
+    "needs_double_check": { "type": "boolean" },
+    "needs_qa_reviewer": { "type": "boolean" },
+    "confidence": { "$ref": "_common.schema.json#/$defs/confidence" },
+    "mitigations": { "type": "array" }
+  },
+  "required": ["risk_id", "risk", "impact", "probability", "risk_level", "priority", "rationale", "needs_qa_reviewer", "confidence"],
+  "allOf": [
+    {
+      "description": "Risk Matrix: HIGH/CRITICAL risk requires the QA Reviewer.",
+      "if": { "properties": { "risk_level": { "enum": ["HIGH", "CRITICAL"] } }, "required": ["risk_level"] },
+      "then": { "properties": { "needs_qa_reviewer": { "const": true } } }
+    }
+  ],
+  "additionalProperties": true
+}

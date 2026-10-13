@@ -1,0 +1,35 @@
+{
+  "preflight_id": "PF-EXT-001",
+  "scope": "TS-EXT-001 web suite (extended M-04 check fields)",
+  "checks": [
+    {
+      "check": "tools_available",
+      "status": "OK",
+      "capability": "browser_chromium",
+      "capability_state": "AVAILABLE",
+      "observed_state": "AVAILABLE",
+      "required": true,
+      "observed": "chromium installed (chromium-1248)",
+      "evidence": []
+    },
+    {
+      "check": "adapter_available",
+      "status": "UNVERIFIED",
+      "capability": "qa_reviewer",
+      "capability_state": "UNVERIFIED",
+      "observed_state": "UNVERIFIED",
+      "required": true,
+      "observed": "declarative signal QAA_QA_REVIEWER_AVAILABLE not set (availability not verified; no automatic probe); risk_level=HIGH",
+      "action": "declare the QA Reviewer availability through QAA_QA_REVIEWER_AVAILABLE only after verifying it, or keep the review BLOCKED/UNVERIFIED",
+      "detail": "Declarative operator signal only; the detector does not probe the QA Reviewer.",
+      "availability_source": "declarative_signal",
+      "evidence": []
+    }
+  ],
+  "result": "BLOCKED",
+  "blocked_reasons": [
+    "[adapter_available] qa_reviewer: declarative signal QAA_QA_REVIEWER_AVAILABLE not set; action: keep the review BLOCKED/UNVERIFIED"
+  ],
+  "confidence": "MEDIUM",
+  "notes": "Extended M-04 check fields are structurally validated by M-01; old records without them stay valid."
+}

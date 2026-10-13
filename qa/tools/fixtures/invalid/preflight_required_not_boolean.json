@@ -1,0 +1,17 @@
+{
+  "preflight_id": "PF-BAD-REQ",
+  "scope": "invalid required type (string instead of boolean)",
+  "checks": [
+    {
+      "check": "tools_available",
+      "status": "OK",
+      "capability": "tool_node",
+      "capability_state": "AVAILABLE",
+      "observed_state": "AVAILABLE",
+      "required": "yes",
+      "observed": "node v24.21.0"
+    }
+  ],
+  "result": "READY",
+  "confidence": "HIGH"
+}

@@ -1,0 +1,16 @@
+{
+  "risk_id": "R-001",
+  "risk": "Checkout blocked by cart failure",
+  "category": "functional",
+  "impact": "CRITICAL",
+  "probability": "MEDIUM",
+  "risk_level": "HIGH",
+  "priority": "P0",
+  "rationale": "cart is mandatory to purchase",
+  "action_required": "test",
+  "required_evidence": ["counter screenshot"],
+  "needs_double_check": true,
+  "needs_qa_reviewer": true,
+  "confidence": "MEDIUM",
+  "mitigations": ["verify visible state, not DOM presence"]
+}

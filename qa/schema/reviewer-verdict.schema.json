@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reviewer Verdict",
+  "description": "QA Reviewer verdict. Canonical source: docs/AGENT-CONTRACTS.md. Only ACCEPT/CHALLENGE/INSUFFICIENT_EVIDENCE are valid. ACCEPT requires evidence and no missing evidence.",
+  "type": "object",
+  "properties": {
+    "verdict": { "enum": ["ACCEPT", "CHALLENGE", "INSUFFICIENT_EVIDENCE"] },
+    "confidence": { "$ref": "_common.schema.json#/$defs/confidence" },
+    "confidence_rationale": { "type": "string", "minLength": 1 },
+    "findings": { "type": "array" },
+    "missing_evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string" },
+          "reason": { "type": "string", "minLength": 1 }
+        },
+        "required": ["reason"],
+        "additionalProperties": true
+      }
+    },
+    "evidence_references": { "$ref": "_common.schema.json#/$defs/evidenceList" },
+    "reasoning_summary": { "type": "string", "minLength": 1 },
+    "requires_retest": { "type": "boolean" },
+    "requires_additional_evidence": { "type": "boolean" },
+    "recommendations": { "type": "array" }
+  },
+  "required": ["verdict", "confidence", "confidence_rationale", "reasoning_summary"],
+  "allOf": [
+    {
+      "description": "ACCEPT requires evidence references, no missing evidence, and no pending additional evidence.",
+      "if": { "properties": { "verdict": { "const": "ACCEPT" } }, "required": ["verdict"] },
+      "then": {
+        "properties": {
+          "missing_evidence": { "maxItems": 0 },
+          "evidence_references": { "minItems": 1 },
+          "requires_additional_evidence": { "const": false }
+        },
+        "required": ["evidence_references"]
+      }
+    },
+    {
+      "description": "INSUFFICIENT_EVIDENCE cannot claim HIGH confidence.",
+      "if": { "properties": { "verdict": { "const": "INSUFFICIENT_EVIDENCE" } }, "required": ["verdict"] },
+      "then": { "properties": { "confidence": { "enum": ["LOW", "MEDIUM"] } } }
+    }
+  ],
+  "additionalProperties": true
+}

@@ -1,0 +1,20 @@
+{
+  "suite_id": "TS-TEST-001",
+  "rule": "tool_requested -> tool_executed -> execution_success -> result_obtained -> result_validated",
+  "traces": [
+    {
+      "trace_id": "TR-001",
+      "context": "TC-001 open Home",
+      "tool_requested": "browser.tabs.open(url)",
+      "tool_executed": "browser.tabs.open",
+      "executed": true,
+      "execution_success": true,
+      "result_obtained": "tab opened",
+      "result_validated": "validated: heading present in DOM",
+      "expected_result": "Home visible",
+      "actual_result": "Home visible",
+      "evidence": ["qa/evidence/sample.png"],
+      "validation_performed": true
+    }
+  ]
+}

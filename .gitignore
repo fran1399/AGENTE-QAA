@@ -1,0 +1,36 @@
+# Node / automation dependencies
+node_modules/
+
+# Playwright outputs (kept out of the repository; evidence for QA goes to qa/evidence/)
+automation/.artifacts/
+playwright-report/
+test-results/
+blob-report/
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Python bytecode (QA tools / contract validator)
+__pycache__/
+*.pyc
+
+# Compiled M-03 runner (build artifact, reproducible via `npm run build:runner`)
+automation/.dist/
+
+# M-03 run outputs (default `--out` target; gitignored, reproducible runs)
+automation/.runs/
+qa/runs/
+
+# Local environment (never commit secrets)
+.env
+.env.*
+!.env.example
+
+# Audit / workspace temp dumps (local diagnostics, never published)
+.aud-*
+
+# Local logs and OS/editor junk
+*.log
+.DS_Store
+Thumbs.db
+Desktop.ini

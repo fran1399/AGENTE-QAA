@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Exploratory Finding",
+  "description": "Exploratory testing finding. Canonical source: docs/AGENT-CONTRACTS.md. An observation is not a bug; CONFIRMED requires evidence.",
+  "type": "object",
+  "properties": {
+    "finding_id": { "type": "string", "pattern": "^EF-[A-Za-z0-9._-]+$" },
+    "scope": { "type": "string" },
+    "observation": { "type": "string", "minLength": 1 },
+    "hypothesis": { "type": "string" },
+    "evidence": { "$ref": "_common.schema.json#/$defs/evidenceList" },
+    "expected_result": { "type": "string" },
+    "actual_result": { "type": "string" },
+    "conclusion": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["OBSERVATION", "HYPOTHESIS", "CONFIRMED", "INCONCLUSIVE", "NOT_A_BUG", "INSUFFICIENT_EVIDENCE", "BLOCKED"] },
+    "confidence": { "$ref": "_common.schema.json#/$defs/confidence" },
+    "uncertainties": { "type": "array" },
+    "risk": { "type": "string" }
+  },
+  "required": ["finding_id", "observation", "status", "confidence", "conclusion"],
+  "allOf": [
+    {
+      "description": "CONFIRMED requires evidence.",
+      "if": { "properties": { "status": { "const": "CONFIRMED" } }, "required": ["status"] },
+      "then": { "properties": { "evidence": { "minItems": 1 } }, "required": ["evidence"] }
+    }
+  ],
+  "additionalProperties": true
+}

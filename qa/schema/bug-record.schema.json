@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Bug Record",
+  "description": "Structured bug record. Canonical source: docs/AGENT-CONTRACTS.md. A CONFIRMED bug must be classified APP_BUG and carry evidence. 'expected_result'/'actual_result' are accepted as compatibility aliases of 'expected'/'observed'.",
+  "type": "object",
+  "properties": {
+    "bug_id": { "type": "string", "pattern": "^BUG-[A-Za-z0-9._-]+$" },
+    "title": { "type": "string", "minLength": 1 },
+    "related_test_case_id": { "type": "string" },
+    "failure_classification": { "$ref": "_common.schema.json#/$defs/failureCategory" },
+    "severity": { "$ref": "_common.schema.json#/$defs/severity" },
+    "priority": { "$ref": "_common.schema.json#/$defs/priority" },
+    "status": { "enum": ["CONFIRMED", "LIKELY", "POSSIBLE", "NOT_A_BUG", "INSUFFICIENT_EVIDENCE"] },
+    "environment": { "type": "object" },
+    "preconditions": { "type": "array", "items": { "type": "string" } },
+    "steps_to_reproduce": { "type": "array", "items": { "type": "string" } },
+    "expected": { "type": "string" },
+    "observed": { "type": "string" },
+    "expected_result": { "type": "string" },
+    "actual_result": { "type": "string" },
+    "evidence": { "$ref": "_common.schema.json#/$defs/evidenceList" },
+    "possible_cause": { "type": "string" },
+    "confidence": { "$ref": "_common.schema.json#/$defs/confidence" },
+    "confidence_rationale": { "type": "string" },
+    "notes": { "type": "string" }
+  },
+  "required": ["bug_id", "title", "severity", "priority", "status", "evidence", "confidence"],
+  "allOf": [
+    {
+      "description": "A CONFIRMED bug must be an APP_BUG with at least one evidence reference.",
+      "if": { "properties": { "status": { "const": "CONFIRMED" } }, "required": ["status"] },
+      "then": {
+        "properties": {
+          "failure_classification": { "const": "APP_BUG" },
+          "evidence": { "minItems": 1 }
+        },
+        "required": ["failure_classification", "evidence"]
+      }
+    },
+    {
+      "description": "INSUFFICIENT_EVIDENCE cannot be classified as APP_BUG.",
+      "if": { "properties": { "status": { "const": "INSUFFICIENT_EVIDENCE" } }, "required": ["status"] },
+      "then": {
+        "properties": { "failure_classification": { "not": { "const": "APP_BUG" } } }
+      }
+    },
+    {
+      "description": "A NOT_A_BUG requires an explanation (possible_cause or notes).",
+      "if": { "properties": { "status": { "const": "NOT_A_BUG" } }, "required": ["status"] },
+      "then": { "anyOf": [{ "required": ["possible_cause"] }, { "required": ["notes"] }] }
+    }
+  ],
+  "additionalProperties": true
+}

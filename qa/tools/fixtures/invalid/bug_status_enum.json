@@ -1,0 +1,9 @@
+{
+  "bug_id": "BUG-001",
+  "title": "Estado de bug invalido",
+  "severity": "LOW",
+  "priority": "P3",
+  "status": "MAYBE_BUG",
+  "evidence": ["qa/evidence/sample.png"],
+  "confidence": "LOW"
+}

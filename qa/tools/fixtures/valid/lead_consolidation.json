@@ -1,0 +1,19 @@
+{
+  "objective": "Validate the consolidation report schema",
+  "context": "schema fixtures",
+  "risk_summary": "one HIGH risk",
+  "inputs_by_agent": [
+    {"agent": "test-executor", "output_ref": "qa/tests/sample_trace.json", "status": "received"},
+    {"agent": "qa-reviewer", "output_ref": "qa/reports/reviewer.json", "status": "received"}
+  ],
+  "conflicts": [],
+  "confirmed_findings": ["F-001"],
+  "uncertain_findings": [],
+  "not_verified": [],
+  "blocked": [],
+  "final_conclusion": "1 case PASS, no confirmed bugs",
+  "reviewer_verdict": {"verdict": "ACCEPT"},
+  "confidence": "MEDIUM",
+  "evidence_index": [{"evidence_ref": "qa/evidence/sample.png", "linked_to": "TC-001", "notes": ""}],
+  "uncertainties": []
+}

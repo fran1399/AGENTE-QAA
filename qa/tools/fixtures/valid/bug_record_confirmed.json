@@ -1,0 +1,17 @@
+{
+  "bug_id": "BUG-001",
+  "title": "Heading missing on Home",
+  "related_test_case_id": "TC-001",
+  "failure_classification": "APP_BUG",
+  "severity": "HIGH",
+  "priority": "P1",
+  "status": "CONFIRMED",
+  "environment": {"url": "https://example.test/", "browser": "desktop"},
+  "preconditions": ["Home loaded"],
+  "steps_to_reproduce": ["Open Home", "Inspect heading"],
+  "expected": "heading visible",
+  "observed": "heading missing",
+  "evidence": ["qa/evidence/sample.png"],
+  "possible_cause": "template regression (hypothesis)",
+  "confidence": "HIGH"
+}

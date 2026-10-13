@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Execution Report",
+  "description": "Complete execution report for a runner suite run. Canonical source: docs/AGENT-CONTRACTS.md. Contains run metadata, overall status, per-case results, evidence references, pre-flight and auto-healing data. Both JSON and HTML reports are generated from this structure.",
+  "type": "object",
+  "properties": {
+    "report_id": { "type": "string", "pattern": "^ER-[A-Za-z0-9._-]+$" },
+    "run_id": { "type": "string", "pattern": "^R-[A-Za-z0-9._-]+$" },
+    "suite_id": { "type": "string", "minLength": 1 },
+    "app": { "type": "string", "minLength": 1 },
+    "platform": { "type": "string", "minLength": 1 },
+    "started_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}" },
+    "ended_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}" },
+    "duration_ms": { "type": "number", "minimum": 0 },
+    "overall_status": { "enum": ["PASS", "FAIL", "BLOCKED", "SKIPPED", "PARTIAL"] },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "selected": { "type": "integer", "minimum": 0 },
+        "executed": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 },
+        "errors": { "type": "integer", "minimum": 0 },
+        "blocked": { "type": "integer", "minimum": 0 },
+        "skipped": { "type": "integer", "minimum": 0 },
+        "omitted": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["selected", "executed", "passed", "failed", "errors", "blocked", "skipped", "omitted"],
+      "additionalProperties": false
+    },
+    "cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "test_case_id": { "type": "string", "pattern": "^TC-[\\w.-]+$" },
+          "title": { "type": "string" },
+          "status": { "enum": ["PASS", "FAIL", "BLOCKED", "SKIPPED"] },
+          "duration_ms": { "type": "number", "minimum": 0 },
+          "spec": { "type": "string" },
+          "error": { "type": "string" },
+          "block_reason": { "type": "string" },
+          "evidence": { "$ref": "_common.schema.json#/$defs/evidenceList" },
+          "auto_healing": { "type": "object" }
+        },
+        "required": ["test_case_id", "title", "status", "duration_ms"],
+        "additionalProperties": true
+      }
+    },
+    "preflight": {
+      "type": "object",
+      "properties": {
+        "result": { "enum": ["READY", "BLOCKED", "SKIPPED"] },
+        "blocked_reasons": { "type": "array", "items": { "type": "string" } },
+        "record_path": { "type": "string" }
+      },
+      "required": ["result"],
+      "additionalProperties": true
+    },
+    "auto_healing": {
+      "type": "object",
+      "properties": {
+        "mode": { "enum": ["OFF", "OBSERVE", "HIGH_CONFIDENCE"] },
+        "attempts": { "type": "integer", "minimum": 0 },
+        "recoveries_used": { "type": "integer", "minimum": 0 },
+        "reused": { "type": "integer", "minimum": 0 },
+        "duplicate_prevented": { "type": "integer", "minimum": 0 },
+        "ai_calls": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["mode"],
+      "additionalProperties": true
+    },
+    "infrastructure_errors": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "evidence_index": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "type": { "$ref": "_common.schema.json#/$defs/evidenceType" },
+          "test_case_id": { "type": "string" }
+        },
+        "required": ["path"],
+        "additionalProperties": true
+      }
+    },
+    "generated_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}" }
+  },
+  "required": ["report_id", "run_id", "suite_id", "app", "platform", "started_at", "ended_at", "overall_status", "summary", "cases", "generated_at"],
+  "additionalProperties": true
+}

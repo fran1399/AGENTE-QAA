@@ -1,0 +1,39 @@
+{
+  "heal_id": "AH-R-2026-HEAL-0004",
+  "run_id": "R-2026-HEAL-003",
+  "suite_id": "SUITE-heal-demo-hc",
+  "app": "demo-heal",
+  "test_case_id": "TC-HEAL-5",
+  "spec": "automation/specs/heal-demo/hc.spec.ts",
+  "test_title": "TC-HEAL-5: la aserción falla aunque el selector se recupere",
+  "selector_original": "#search-box",
+  "candidates": [
+    {
+      "selector": "[data-testid=\"search-field\"]",
+      "strategy": "stable_attribute",
+      "count": 1,
+      "unique": true,
+      "visible": true,
+      "enabled": true,
+      "editable": true,
+      "role": "textbox",
+      "identity": true,
+      "reason": "unique match (count=1), state ok, identity verified (role=textbox)",
+      "accepted": true
+    }
+  ],
+  "mode": "HIGH_CONFIDENCE",
+  "used_recovery": true,
+  "reused_from_store": false,
+  "verification_after": "POST_VERIFICATION_PASS",
+  "status": "RECOVERED",
+  "action": "fill",
+  "expected": { "role": "textbox", "placeholder": "Buscar productos...", "testId": ["search-field", "search-box"] },
+  "url": "http://127.0.0.1:4174/heal/demo?v=6",
+  "evidence": ["automation/.runs/heal-003/evidence/autoheal/AH-R-2026-HEAL-0004.png"],
+  "confidence": "HIGH",
+  "duplicate_prevented": false,
+  "ai_calls": 0,
+  "duration_ms": 180,
+  "timestamp": "2026-10-09T10:07:00.000Z"
+}

@@ -1,0 +1,18 @@
+{
+  "preflight_id": "PF-BAD-SRC",
+  "scope": "invalid availability_source value",
+  "checks": [
+    {
+      "check": "adapter_available",
+      "status": "OK",
+      "capability": "qa_reviewer",
+      "capability_state": "AVAILABLE",
+      "observed_state": "AVAILABLE",
+      "required": true,
+      "observed": "declarative signal QAA_QA_REVIEWER_AVAILABLE=1 (operator-declared)",
+      "availability_source": "guessed"
+    }
+  ],
+  "result": "READY",
+  "confidence": "HIGH"
+}

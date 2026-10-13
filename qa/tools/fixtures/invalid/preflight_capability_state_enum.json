@@ -1,0 +1,17 @@
+{
+  "preflight_id": "PF-BAD-STATE",
+  "scope": "invalid capability_state value",
+  "checks": [
+    {
+      "check": "tools_available",
+      "status": "OK",
+      "capability": "browser_chromium",
+      "capability_state": "READY",
+      "observed_state": "AVAILABLE",
+      "required": true,
+      "observed": "chromium installed"
+    }
+  ],
+  "result": "READY",
+  "confidence": "HIGH"
+}

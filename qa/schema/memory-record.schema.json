@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Memory Record",
+  "description": "Historical QA memory record. Canonical source: docs/AGENT-CONTRACTS.md. Historical data is not current evidence; a RELEVANT record must reference evidence.",
+  "type": "object",
+  "properties": {
+    "memory_id": { "type": "string", "pattern": "^MEM-[A-Za-z0-9._-]+$" },
+    "related_bug_id": { "type": "string" },
+    "related_test_case_id": { "type": "string" },
+    "area": { "type": "string" },
+    "cause": { "type": "string" },
+    "failure_classification": { "enum": ["", "APP_BUG", "TEST_DATA", "TEST_INFRASTRUCTURE", "BLOCKED", "INSUFFICIENT_EVIDENCE"] },
+    "test_data_refs": { "type": "array" },
+    "retest_refs": { "type": "array" },
+    "regression_refs": { "type": "array" },
+    "symptoms": { "type": "array" },
+    "hypothesis": { "type": "string" },
+    "evidence_refs": { "$ref": "_common.schema.json#/$defs/evidenceList" },
+    "confidence": { "$ref": "_common.schema.json#/$defs/confidence" },
+    "frequency": { "type": "integer", "minimum": 0 },
+    "last_seen": { "type": "string" },
+    "status": { "enum": ["HISTORICAL", "RELEVANT", "STALE", "ARCHIVED"] },
+    "regression_risk": { "$ref": "_common.schema.json#/$defs/severity" },
+    "tags": { "type": "array" }
+  },
+  "required": ["memory_id", "status", "confidence", "frequency"],
+  "allOf": [
+    {
+      "description": "A RELEVANT memory record must reference evidence.",
+      "if": { "properties": { "status": { "const": "RELEVANT" } }, "required": ["status"] },
+      "then": { "properties": { "evidence_refs": { "minItems": 1 } }, "required": ["evidence_refs"] }
+    }
+  ],
+  "additionalProperties": true
+}

@@ -1,0 +1,9 @@
+{
+  "test_id": "TC-001",
+  "status": "FAIL",
+  "expected_result": "heading visible",
+  "actual_result": "heading missing",
+  "evidence": ["qa/evidence/sample.png"],
+  "confidence": "HIGH",
+  "confidence_rationale": "reproduced"
+}

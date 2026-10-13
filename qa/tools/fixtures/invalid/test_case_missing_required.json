@@ -1,0 +1,20 @@
+{
+  "suite_id": "TS-TEST-002",
+  "test_cases": [
+    {
+      "test_case_id": "TC-001",
+      "title": "Missing confidence",
+      "objective": "Should fail: required field confidence is absent",
+      "preconditions": [],
+      "test_data": [],
+      "steps": ["open page"],
+      "expected_result": "page visible",
+      "actual_result": "page visible",
+      "status": "PASS",
+      "severity": "LOW",
+      "priority": "P3",
+      "evidence": ["qa/evidence/sample.png"],
+      "confidence_rationale": "observed"
+    }
+  ]
+}

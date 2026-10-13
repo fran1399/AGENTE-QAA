@@ -1,0 +1,6 @@
+{
+  "verdict": "REJECT",
+  "confidence": "LOW",
+  "confidence_rationale": "verdict fuera del enum",
+  "reasoning_summary": "verdict must be ACCEPT|CHALLENGE|INSUFFICIENT_EVIDENCE"
+}

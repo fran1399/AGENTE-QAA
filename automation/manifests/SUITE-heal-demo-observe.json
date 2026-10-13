@@ -1,0 +1,37 @@
+{
+  "suite_id": "SUITE-heal-demo-observe",
+  "app": "demo-heal",
+  "platform": "web",
+  "adapter": "playwright",
+  "description": "Suite demo M-05 en modo OBSERVE: el adaptador identifica y registra candidatos pero nunca los utiliza. App aislada local (127.0.0.1:4174), sin red externa ni credenciales.",
+  "web_server": {
+    "command": "node automation/scripts/serve-heal-demo.mjs",
+    "url": "http://127.0.0.1:4174/",
+    "timeout_ms": 15000
+  },
+  "requirements": {
+    "task": "SUITE-heal-demo-observe",
+    "scope": "Suite demo M-05 OBSERVE - app local aislada 127.0.0.1:4174",
+    "platform": "web",
+    "need": {
+      "runtime": { "python": true, "node": true, "npm": true },
+      "node_packages": ["@playwright/test"],
+      "adapters": ["playwright"],
+      "browsers": ["chromium"],
+      "tools": ["node", "npm"],
+      "target": { "url": "http://127.0.0.1:4174/", "method": "GET", "ok_status_max": 499, "timeout_ms": 5000 },
+      "auto_healing": { "mode": "OBSERVE" },
+      "requires_evidence": true,
+      "qa_reviewer": { "required": false }
+    }
+  },
+  "test_cases": [
+    {
+      "test_case_id": "TC-HEAL-10",
+      "title": "TC-HEAL-10: OBSERVE registra candidatos sin utilizarlos",
+      "spec": "automation/specs/heal-demo/observe.spec.ts",
+      "test_name": "TC-HEAL-10: OBSERVE registra candidatos sin utilizarlos",
+      "expected_result": "Con selector roto (v=1), el intento queda OBSERVED con al menos un candidato identificado, used_recovery=false, el selector original sigue sin resolver y el input candidato permanece vacío (nunca se usó ni se escribió el store)"
+    }
+  ]
+}

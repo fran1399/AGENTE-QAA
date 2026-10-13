@@ -1,0 +1,8 @@
+{
+  "finding_id": "EF-002",
+  "scope": "Home",
+  "observation": "algo observado",
+  "conclusion": "confirmado",
+  "status": "CONFIRMED",
+  "confidence": "HIGH"
+}

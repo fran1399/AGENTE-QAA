@@ -1,0 +1,2 @@
+This file exists on purpose so the pre-flight test suite can point evidence_dir
+at a path that is a file, not a directory.

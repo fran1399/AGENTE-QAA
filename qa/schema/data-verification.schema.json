@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Data Verification",
+  "description": "Result of a QA data verification against a read-only database. Canonical source: docs/AGENT-CONTRACTS.md. Records the query, expected condition, actual result, and evidence.",
+  "type": "object",
+  "properties": {
+    "verification_id": { "type": "string", "pattern": "^DV-[A-Za-z0-9._-]+$" },
+    "description": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["PASS", "FAIL", "ERROR"] },
+    "query": { "type": "string", "minLength": 1 },
+    "params": {
+      "type": "array",
+      "items": {}
+    },
+    "rows_returned": { "type": "integer", "minimum": 0 },
+    "duration_ms": { "type": "number", "minimum": 0 },
+    "expected": {
+      "type": "object",
+      "properties": {
+        "type": { "enum": ["row_count", "column_value", "not_empty", "empty"] },
+        "count": { "type": "integer" },
+        "column": { "type": "string" },
+        "value": {},
+        "operator": { "enum": ["=", "!=", ">", "<", ">=", "<="] }
+      },
+      "required": ["type"],
+      "additionalProperties": false
+    },
+    "actual": {
+      "type": "object",
+      "properties": {
+        "row_count": { "type": "integer", "minimum": 0 },
+        "column_value": {},
+        "column_found": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "error": { "type": "string" },
+    "evidence": { "$ref": "_common.schema.json#/$defs/evidenceList" }
+  },
+  "required": ["verification_id", "description", "status", "query", "rows_returned", "duration_ms", "expected", "actual", "evidence"],
+  "additionalProperties": true
+}

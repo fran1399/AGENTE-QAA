@@ -1,0 +1,10 @@
+{
+  "retest_id": "RT-002",
+  "related_bug_id": "BUG-001",
+  "related_test_case_id": "TC-001",
+  "original_result": "FAIL",
+  "retest_result": "FAIL",
+  "fix_status": "FIXED",
+  "evidence": ["qa/evidence/sample.png"],
+  "confidence": "HIGH"
+}

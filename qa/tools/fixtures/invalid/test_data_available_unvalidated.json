@@ -1,0 +1,15 @@
+{
+  "data_id": "TD-002",
+  "description": "Test Data marcada AVAILABLE sin validacion",
+  "test_case_ids": ["TC-001"],
+  "required_for": "precondition",
+  "source": "user_provided",
+  "state": "AVAILABLE",
+  "validation": {
+    "method": "assumed",
+    "evidence": [],
+    "validated": false
+  },
+  "usable": true,
+  "confidence": "HIGH"
+}

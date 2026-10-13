@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Execution Trace",
+  "description": "Tool execution traceability. Canonical source: docs/AGENT-CONTRACTS.md. tool called -> tool executed -> execution_success -> result obtained -> result validated. Never infer success from an attempt.",
+  "type": "object",
+  "properties": {
+    "trace_id": { "type": "string", "pattern": "^TR-[A-Za-z0-9._-]+$" },
+    "context": { "type": "string", "minLength": 1 },
+    "tool_requested": { "type": "string" },
+    "tool_executed": { "type": "string" },
+    "executed": { "type": "boolean" },
+    "execution_success": { "type": "boolean" },
+    "result_obtained": { "type": "string" },
+    "result_validated": { "type": "string" },
+    "expected_result": { "type": "string" },
+    "actual_result": { "type": "string" },
+    "evidence": { "$ref": "_common.schema.json#/$defs/evidenceList" },
+    "validation_performed": { "type": "boolean" },
+    "confidence": { "$ref": "_common.schema.json#/$defs/confidence" },
+    "notes": { "type": "string" }
+  },
+  "required": ["trace_id", "context", "executed", "execution_success", "validation_performed"],
+  "allOf": [
+    {
+      "description": "execution_success cannot be true when the tool was not executed.",
+      "if": { "properties": { "executed": { "const": false } }, "required": ["executed"] },
+      "then": { "properties": { "execution_success": { "const": false } } }
+    },
+    {
+      "description": "A performed validation requires a validated result description.",
+      "if": { "properties": { "validation_performed": { "const": true } }, "required": ["validation_performed"] },
+      "then": { "properties": { "result_validated": { "type": "string", "minLength": 1 } }, "required": ["result_validated"] }
+    }
+  ],
+  "additionalProperties": true
+}

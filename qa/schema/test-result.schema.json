@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Test Result",
+  "description": "Result of a single test execution. Canonical source: docs/AGENT-CONTRACTS.md. A FAIL must carry a Failure Classification; the validator never turns a FAIL into a PASS.",
+  "type": "object",
+  "properties": {
+    "test_id": { "type": "string", "minLength": 1 },
+    "status": { "$ref": "_common.schema.json#/$defs/resultStatus" },
+    "expected_result": { "type": "string" },
+    "actual_result": { "type": "string" },
+    "expected": { "type": "string" },
+    "observed": { "type": "string" },
+    "evidence": { "$ref": "_common.schema.json#/$defs/evidenceList" },
+    "failure_classification": { "$ref": "_common.schema.json#/$defs/failureCategory" },
+    "confidence": { "$ref": "_common.schema.json#/$defs/confidence" },
+    "confidence_rationale": { "type": "string", "minLength": 1 },
+    "notes": { "type": "string" }
+  },
+  "required": ["test_id", "status", "confidence", "confidence_rationale"],
+  "allOf": [
+    {
+      "description": "A FAIL must be classified (APP_BUG/TEST_DATA/TEST_INFRASTRUCTURE/BLOCKED/INSUFFICIENT_EVIDENCE) and carry evidence.",
+      "if": { "properties": { "status": { "const": "FAIL" } }, "required": ["status"] },
+      "then": {
+        "properties": { "evidence": { "minItems": 1 } },
+        "required": ["failure_classification", "evidence"]
+      }
+    },
+    {
+      "description": "A PASS requires evidence.",
+      "if": { "properties": { "status": { "const": "PASS" } }, "required": ["status"] },
+      "then": { "properties": { "evidence": { "minItems": 1 } }, "required": ["evidence"] }
+    }
+  ],
+  "additionalProperties": true
+}

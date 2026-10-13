@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Demo Store QA</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 2rem; }
+    h1 { font-size: 1.5rem; }
+    ul { list-style: none; padding: 0; }
+    li { display: flex; gap: 1rem; align-items: center; padding: .5rem 0; border-bottom: 1px solid #eee; }
+    .price { font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Demo Store QA</h1>
+  <p data-testid="status">ready</p>
+  <p>Carrito: <span data-testid="cart-count" id="cart-count">0</span></p>
+  <ul data-testid="product-list" id="product-list"></ul>
+  <script>
+    const products = [
+      { id: 'P-01', name: 'Zapatilla Urbana', price: 49999 },
+      { id: 'P-02', name: 'Buzo Oversize', price: 39999 },
+      { id: 'P-03', name: 'Gorra Snapback', price: 19999 },
+      { id: 'P-04', name: 'Remera Básica', price: 14999 },
+    ];
+    const list = document.getElementById('product-list');
+    let cart = 0;
+    for (const p of products) {
+      const li = document.createElement('li');
+      li.className = 'product';
+      li.dataset.productId = p.id;
+      li.innerHTML = '<span data-testid="product-name"></span>' +
+        ' <span class="price" data-testid="product-price"></span>' +
+        ' <button data-testid="add-product">Añadir</button>';
+      li.querySelector('[data-testid="product-name"]').textContent = p.name;
+      li.querySelector('[data-testid="product-price"]').textContent = '$' + p.price;
+      li.querySelector('button').addEventListener('click', () => {
+        cart += 1;
+        document.getElementById('cart-count').textContent = String(cart);
+      });
+      list.appendChild(li);
+    }
+  </script>
+</body>
+</html>

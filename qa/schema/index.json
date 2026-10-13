@@ -1,0 +1,58 @@
+{
+  "version": "1.0.0",
+  "description": "Contract registry for QA artifact validation (M-01). Maps each contract in docs/AGENT-CONTRACTS.md to its JSON Schema and how records are extracted from an artifact. Extend by adding a schema file and an entry under 'contracts'.",
+  "common": "_common.schema.json",
+  "contracts": {
+    "generic-result": { "schema": "generic-result.schema.json", "shape": "record", "id_key": "task" },
+    "test-case": { "schema": "test-case.schema.json", "shape": "wrapper", "records_key": "test_cases", "id_key": "test_case_id", "wrapper_required": ["suite_id", "test_cases"] },
+    "test-result": { "schema": "test-result.schema.json", "shape": "record-or-array", "id_key": "test_id" },
+    "bug-record": { "schema": "bug-record.schema.json", "shape": "record-or-array", "id_key": "bug_id" },
+    "failure-classification": { "schema": "failure-classification.schema.json", "shape": "record-or-array", "id_key": "classification_id" },
+    "test-data-record": { "schema": "test-data-record.schema.json", "shape": "record-or-array", "id_key": "data_id" },
+    "pre-flight-record": { "schema": "pre-flight-record.schema.json", "shape": "record-or-array", "id_key": "preflight_id" },
+    "retest-record": { "schema": "retest-record.schema.json", "shape": "record-or-array", "id_key": "retest_id" },
+    "reviewer-verdict": { "schema": "reviewer-verdict.schema.json", "shape": "record", "id_key": "verdict" },
+    "lead-consolidation-report": { "schema": "lead-consolidation-report.schema.json", "shape": "record", "id_key": "objective" },
+    "risk-record": { "schema": "risk-record.schema.json", "shape": "record-or-array", "id_key": "risk_id" },
+    "exploratory-finding": { "schema": "exploratory-finding.schema.json", "shape": "record-or-array", "id_key": "finding_id" },
+    "memory-record": { "schema": "memory-record.schema.json", "shape": "record-or-array", "id_key": "memory_id" },
+    "execution-trace": { "schema": "execution-trace.schema.json", "shape": "wrapper", "records_key": "traces", "id_key": "trace_id", "wrapper_required": ["suite_id", "traces"] },
+    "auto-heal-record": { "schema": "auto-heal-record.schema.json", "shape": "record-or-array", "id_key": "heal_id" },
+    "execution-report": { "schema": "execution-report.schema.json", "shape": "record", "id_key": "report_id" },
+    "data-verification": { "schema": "data-verification.schema.json", "shape": "record-or-array", "id_key": "verification_id" }
+  },
+  "artifact_hints": {
+    "heal_id": "auto-heal-record",
+    "classification_id": "failure-classification",
+    "test_case_id": "test-case",
+    "test_id": "test-result",
+    "bug_id": "bug-record",
+    "data_id": "test-data-record",
+    "preflight_id": "pre-flight-record",
+    "retest_id": "retest-record",
+    "risk_id": "risk-record",
+    "finding_id": "exploratory-finding",
+    "memory_id": "memory-record",
+    "trace_id": "execution-trace",
+    "report_id": "execution-report",
+    "verification_id": "data-verification",
+    "verdict": "reviewer-verdict",
+    "final_conclusion": "lead-consolidation-report",
+    "agent": "generic-result"
+  },
+  "wrapper_hints": {
+    "test_cases": "test-case",
+    "traces": "execution-trace"
+  },
+  "references": [
+    { "id": "fc-test", "from": "failure-classification", "path": "test_id", "to": "test-case" },
+    { "id": "td-tests", "from": "test-data-record", "path": "test_case_ids[]", "to": "test-case" },
+    { "id": "bug-test", "from": "bug-record", "path": "related_test_case_id", "to": "test-case" },
+    { "id": "fc-bug", "from": "failure-classification", "path": "related_bug_id", "to": "bug-record" },
+    { "id": "rt-bug", "from": "retest-record", "path": "related_bug_id", "to": "bug-record" },
+    { "id": "rt-test", "from": "retest-record", "path": "related_test_case_id", "to": "test-case" },
+    { "id": "mem-bug", "from": "memory-record", "path": "related_bug_id", "to": "bug-record" },
+    { "id": "mem-test", "from": "memory-record", "path": "related_test_case_id", "to": "test-case" },
+    { "id": "tc-risk", "from": "test-case", "path": "traceability.risk_id", "to": "risk-record" }
+  ]
+}

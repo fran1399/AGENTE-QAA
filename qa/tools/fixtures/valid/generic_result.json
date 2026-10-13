@@ -1,0 +1,17 @@
+{
+  "agent": "test-executor",
+  "task": "execute TC-001",
+  "status": "success",
+  "findings": [],
+  "evidence": ["qa/evidence/sample.png"],
+  "evidence_links": [{"finding_id": "F-001", "path": "qa/evidence/sample.png", "type": "screenshot", "notes": ""}],
+  "risks": [],
+  "confidence": "HIGH",
+  "confidence_rationale": "direct observation",
+  "conclusion": "TC-001 passed",
+  "uncertainties": [],
+  "expected_result": "heading visible",
+  "actual_result": "heading visible",
+  "recommendation": "",
+  "next_action": ""
+}

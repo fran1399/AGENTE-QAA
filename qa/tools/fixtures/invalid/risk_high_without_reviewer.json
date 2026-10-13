@@ -1,0 +1,16 @@
+{
+  "risk_id": "R-002",
+  "risk": "Riesgo HIGH sin QA Reviewer",
+  "category": "functional",
+  "impact": "CRITICAL",
+  "probability": "HIGH",
+  "risk_level": "CRITICAL",
+  "priority": "P0",
+  "rationale": "deberia requerir QA Reviewer",
+  "action_required": "test",
+  "required_evidence": ["screenshot"],
+  "needs_double_check": true,
+  "needs_qa_reviewer": false,
+  "confidence": "HIGH",
+  "mitigations": []
+}

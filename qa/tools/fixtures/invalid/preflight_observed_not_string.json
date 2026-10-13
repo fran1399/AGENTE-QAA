@@ -1,0 +1,17 @@
+{
+  "preflight_id": "PF-BAD-OBS",
+  "scope": "invalid observed type (array instead of string)",
+  "checks": [
+    {
+      "check": "tools_available",
+      "status": "OK",
+      "capability": "tool_node",
+      "capability_state": "AVAILABLE",
+      "observed_state": "AVAILABLE",
+      "required": true,
+      "observed": ["node v24.21.0"]
+    }
+  ],
+  "result": "READY",
+  "confidence": "HIGH"
+}

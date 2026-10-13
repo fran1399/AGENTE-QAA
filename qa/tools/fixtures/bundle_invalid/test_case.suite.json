@@ -1,0 +1,22 @@
+{
+  "suite_id": "TS-BUNDLE-001",
+  "application": "https://example.test/",
+  "test_cases": [
+    {
+      "test_case_id": "TC-001",
+      "title": "Bundle reference base case",
+      "objective": "Provide a resolvable Test Case id",
+      "preconditions": [],
+      "test_data": [],
+      "steps": ["open page"],
+      "expected_result": "page visible",
+      "actual_result": "page visible",
+      "status": "PASS",
+      "severity": "LOW",
+      "priority": "P3",
+      "evidence": ["qa/evidence/sample.png"],
+      "confidence": "HIGH",
+      "confidence_rationale": "observed"
+    }
+  ]
+}

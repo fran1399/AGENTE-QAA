@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Retest Record",
+  "description": "Retest record after a fix. Canonical source: docs/AGENT-CONTRACTS.md. FIXED requires retest_result=PASS with evidence; a retest that cannot run is never PASS.",
+  "type": "object",
+  "properties": {
+    "retest_id": { "type": "string", "pattern": "^RT-[A-Za-z0-9._-]+$" },
+    "related_bug_id": { "type": "string", "minLength": 1 },
+    "related_test_case_id": { "type": "string", "minLength": 1 },
+    "original_result": { "enum": ["FAIL", "BLOCKED", "NOT VERIFIED", "NOT_EXECUTED"] },
+    "retest_result": { "enum": ["PASS", "FAIL", "BLOCKED", "NOT VERIFIED"] },
+    "fix_status": { "enum": ["FIXED", "NOT_FIXED", "INDETERMINATE"] },
+    "evidence": { "$ref": "_common.schema.json#/$defs/evidenceList" },
+    "impact_assessment": { "type": "string" },
+    "regression_recommended": { "type": "boolean" },
+    "confidence": { "$ref": "_common.schema.json#/$defs/confidence" },
+    "notes": { "type": "string" }
+  },
+  "required": ["retest_id", "related_bug_id", "related_test_case_id", "retest_result", "fix_status", "confidence"],
+  "allOf": [
+    {
+      "description": "FIXED requires a PASS retest with evidence.",
+      "if": { "properties": { "fix_status": { "const": "FIXED" } }, "required": ["fix_status"] },
+      "then": {
+        "properties": { "retest_result": { "const": "PASS" }, "evidence": { "minItems": 1 } },
+        "required": ["evidence"]
+      }
+    },
+    {
+      "description": "NOT_FIXED requires a FAIL retest.",
+      "if": { "properties": { "fix_status": { "const": "NOT_FIXED" } }, "required": ["fix_status"] },
+      "then": { "properties": { "retest_result": { "const": "FAIL" } } }
+    },
+    {
+      "description": "A NOT VERIFIED retest is INDETERMINATE, never FIXED.",
+      "if": { "properties": { "retest_result": { "const": "NOT VERIFIED" } }, "required": ["retest_result"] },
+      "then": { "properties": { "fix_status": { "const": "INDETERMINATE" } } }
+    }
+  ],
+  "additionalProperties": true
+}

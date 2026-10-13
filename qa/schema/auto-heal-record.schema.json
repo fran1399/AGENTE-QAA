@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Auto-Heal Record",
+  "description": "Structured record of ONE M-05 selector-recovery attempt. Canonical source: docs/AUTO-HEALING.md and docs/AGENT-CONTRACTS.md. Every attempt keeps the original selector, the evaluated candidates with accept/reject reasons, the mode, whether recovery was used, the post-verification result, evidence references and a confidence. A record NEVER changes Expected Results, NEVER converts FAIL into PASS and NEVER classifies a Bug: status stays as produced by the assertions.",
+  "type": "object",
+  "properties": {
+    "heal_id": { "type": "string", "pattern": "^AH-[A-Za-z0-9._-]+$" },
+    "run_id": { "type": "string", "minLength": 1 },
+    "suite_id": { "type": "string", "minLength": 1 },
+    "app": { "type": "string", "minLength": 1 },
+    "test_case_id": { "type": "string", "minLength": 1 },
+    "spec": { "type": "string", "minLength": 1 },
+    "test_title": { "type": "string", "minLength": 1 },
+    "selector_original": { "type": "string", "minLength": 1 },
+    "candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "selector": { "type": "string", "minLength": 1 },
+          "strategy": { "enum": ["stable_attribute", "role_name", "label_placeholder", "visible_text", "dom_context", "other_attribute", "stored_reuse"] },
+          "count": { "type": "integer", "minimum": 0 },
+          "unique": { "type": "boolean" },
+          "visible": { "type": "boolean" },
+          "enabled": { "type": "boolean" },
+          "editable": { "type": "boolean" },
+          "role": { "type": "string" },
+          "identity": { "type": "boolean" },
+          "reason": { "type": "string" },
+          "accepted": { "type": "boolean" }
+        },
+        "required": ["selector", "strategy", "count", "unique", "visible", "enabled", "editable", "identity", "reason", "accepted"]
+      }
+    },
+    "selector_used": { "type": ["string", "null"] },
+    "strategy_used": { "enum": ["stable_attribute", "role_name", "label_placeholder", "visible_text", "dom_context", "other_attribute", "stored_reuse", "none", null] },
+    "reason_accept": { "type": ["string", "null"] },
+    "reason_reject": { "type": ["string", "null"] },
+    "mode": { "enum": ["OFF", "OBSERVE", "HIGH_CONFIDENCE"] },
+    "used_recovery": { "type": "boolean" },
+    "reused_from_store": { "type": "boolean" },
+    "verification_after": { "enum": ["POST_VERIFICATION_PASS", "POST_VERIFICATION_FAIL", "NOT_PERFORMED"] },
+    "status": { "enum": ["ORIGINAL_OK", "RECOVERED", "REUSED", "OBSERVED", "REJECTED", "AMBIGUOUS", "STALE", "NO_CANDIDATE", "NOT_ATTEMPTED", "DUPLICATE_PREVENTED"], "description": "Real status of the attempt. `DUPLICATE_PREVENTED` is a reserved value: the current engine keeps the real status (RECOVERED/REUSED) and expresses mutation protection via `duplicate_prevented: true` plus `reason_reject`, so it does not emit `DUPLICATE_PREVENTED`." },
+    "action": { "enum": ["read", "click", "fill", "none"] },
+    "expected": { "type": "object" },
+    "url": { "type": "string" },
+    "evidence": { "$ref": "_common.schema.json#/$defs/evidenceList" },
+    "confidence": { "$ref": "_common.schema.json#/$defs/confidence" },
+    "duplicate_prevented": { "type": "boolean" },
+    "ai_calls": { "const": 0 },
+    "duration_ms": { "type": "integer", "minimum": 0 },
+    "timestamp": { "type": "string", "minLength": 1 }
+  },
+  "required": [
+    "heal_id", "run_id", "suite_id", "app", "test_case_id", "spec", "test_title",
+    "selector_original", "candidates", "mode", "used_recovery", "reused_from_store",
+    "verification_after", "status", "action", "expected", "evidence", "confidence",
+    "duplicate_prevented", "ai_calls", "duration_ms", "timestamp"
+  ],
+  "allOf": [
+    {
+      "if": { "properties": { "used_recovery": { "const": true } } },
+      "then": {
+        "properties": {
+          "selector_used": { "type": "string", "minLength": 1 },
+          "strategy_used": { "enum": ["stable_attribute", "role_name", "label_placeholder", "visible_text", "dom_context", "other_attribute", "stored_reuse"] }
+        },
+        "required": ["selector_used", "strategy_used"]
+      }
+    },
+    {
+      "if": { "properties": { "used_recovery": { "const": true } } },
+      "then": {
+        "properties": { "reason_accept": { "type": "string", "minLength": 1 } },
+        "required": ["reason_accept"]
+      }
+    }
+  ]
+}

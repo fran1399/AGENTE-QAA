@@ -1,0 +1,10 @@
+{
+  "bug_id": "BUG-003",
+  "title": "Bug CONFIRMED clasificado TEST_DATA",
+  "failure_classification": "TEST_DATA",
+  "severity": "HIGH",
+  "priority": "P1",
+  "status": "CONFIRMED",
+  "evidence": ["qa/evidence/sample.png"],
+  "confidence": "HIGH"
+}

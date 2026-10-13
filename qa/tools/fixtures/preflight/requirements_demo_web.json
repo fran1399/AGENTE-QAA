@@ -1,0 +1,15 @@
+{
+  "task": "PF-DEMO-WEB",
+  "scope": "Base tecnica Web/Playwright - demostracion del Pre-flight M-04",
+  "platform": "web",
+  "need": {
+    "runtime": { "python": true, "node": true, "npm": true },
+    "node_packages": ["@playwright/test"],
+    "adapters": ["playwright"],
+    "browsers": ["chromium"],
+    "tools": ["node", "npm"],
+    "evidence_dir": "qa/evidence",
+    "requires_evidence": true,
+    "qa_reviewer": { "required": false }
+  }
+}

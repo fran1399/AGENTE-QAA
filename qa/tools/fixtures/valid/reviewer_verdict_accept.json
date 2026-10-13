@@ -1,0 +1,12 @@
+{
+  "verdict": "ACCEPT",
+  "confidence": "MEDIUM",
+  "confidence_rationale": "evidence supports the conclusion",
+  "findings": [],
+  "missing_evidence": [],
+  "evidence_references": ["qa/evidence/sample.png"],
+  "reasoning_summary": "expected vs observed is explicit and traceable to evidence",
+  "requires_retest": false,
+  "requires_additional_evidence": false,
+  "recommendations": []
+}

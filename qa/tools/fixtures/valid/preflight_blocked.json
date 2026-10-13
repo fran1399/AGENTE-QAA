@@ -1,0 +1,13 @@
+{
+  "preflight_id": "PF-001",
+  "scope": "TS-TEST-001 web suite",
+  "checks": [
+    {"check": "target_accessible", "status": "OK", "evidence": [], "notes": "HTTP 200"},
+    {"check": "tools_available", "status": "BLOCKED", "evidence": [], "notes": "browser not available"},
+    {"check": "credentials_available", "status": "NOT_APPLICABLE", "evidence": [], "notes": "no login required"}
+  ],
+  "result": "BLOCKED",
+  "blocked_reasons": ["browser not available"],
+  "confidence": "HIGH",
+  "notes": "BLOCKED pre-flight prevents execution from starting"
+}

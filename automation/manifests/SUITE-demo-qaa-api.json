@@ -1,0 +1,43 @@
+{
+  "suite_id": "SUITE-demo-qaa-api",
+  "app": "demo-qaa",
+  "platform": "api",
+  "adapter": "playwright",
+  "description": "Suite demo API (Playwright Test / request fixture) contra el servidor aislado local. Sin Axios/Newman: Playwright cubre HTTP, status, headers y payloads en esta etapa.",
+  "web_server": {
+    "command": "node automation/scripts/serve-demo.mjs",
+    "url": "http://127.0.0.1:4173/",
+    "timeout_ms": 15000
+  },
+  "requirements": {
+    "task": "SUITE-demo-qaa-api",
+    "scope": "Suite demo API - servidor local aislado 127.0.0.1:4173",
+    "platform": "api",
+    "need": {
+      "runtime": { "python": true, "node": true, "npm": true },
+      "node_packages": ["@playwright/test"],
+      "adapters": ["playwright"],
+      "browsers": [],
+      "tools": ["node", "npm"],
+      "target": { "url": "http://127.0.0.1:4173/", "method": "GET", "ok_status_max": 499, "timeout_ms": 5000 },
+      "requires_evidence": true,
+      "qa_reviewer": { "required": false }
+    }
+  },
+  "test_cases": [
+    {
+      "test_case_id": "TC-DEMO-API-1",
+      "title": "GET /api/products returns the valid catalog",
+      "spec": "automation/specs/demo-api/api.spec.ts",
+      "test_name": "GET /api/products returns the valid catalog",
+      "expected_result": "GET /api/products responde HTTP 200 con un array de al menos 3 productos, cada uno con id, name y price positivo"
+    },
+    {
+      "test_case_id": "TC-DEMO-API-2",
+      "title": "POST /api/orders validates business rules",
+      "spec": "automation/specs/demo-api/api.spec.ts",
+      "test_name": "POST /api/orders validates business rules",
+      "expected_result": "POST /api/orders: pedido válido devuelve 201 con ok:true y order_id ORD-xxxx; producto desconocido y cantidad inválida devuelven 400 con ok:false y error descriptivo"
+    }
+  ]
+}

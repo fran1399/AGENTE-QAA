@@ -1,0 +1,10 @@
+{
+  "bug_id": "BUG-002",
+  "title": "Bug CONFIRMED sin evidencia",
+  "failure_classification": "APP_BUG",
+  "severity": "HIGH",
+  "priority": "P1",
+  "status": "CONFIRMED",
+  "evidence": [],
+  "confidence": "HIGH"
+}
