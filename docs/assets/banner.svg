@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 360" width="1280" height="360" role="img" aria-label="QA AGENT - Sistema QA multiagente">
+  <title>QA AGENT - Sistema QA multiagente</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a1122"/>
+      <stop offset="0.55" stop-color="#0e1b34"/>
+      <stop offset="1" stop-color="#13264b"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="0.82" cy="0.26" r="0.72">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity="0.20"/>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="0.10" cy="0.92" r="0.82">
+      <stop offset="0" stop-color="#3b82f6" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#3b82f6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#22d3ee"/>
+      <stop offset="0.5" stop-color="#3b82f6"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0 H0 V40" fill="none" stroke="#2b4a7a" stroke-width="1" stroke-opacity="0.16"/>
+    </pattern>
+  </defs>
+
+  <rect x="0" y="0" width="1280" height="360" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1280" height="360" fill="url(#grid)"/>
+  <rect x="0" y="0" width="1280" height="360" fill="url(#glow1)"/>
+  <rect x="0" y="0" width="1280" height="360" fill="url(#glow2)"/>
+  <rect x="0" y="0" width="1280" height="6" fill="url(#accent)"/>
+
+  <!-- Brand mark -->
+  <g transform="translate(64,96)">
+    <rect x="0" y="0" width="96" height="96" rx="24" fill="#3b82f6" fill-opacity="0.16" stroke="#38bdf8" stroke-opacity="0.55" stroke-width="1.5"/>
+    <path d="M48 16 L78 28 L78 52 C78 70 64 81 48 88 C32 81 18 69 16 50 L16 26 Z" fill="none" stroke="#7dd3fc" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M33 50 L43 61 L63 37" fill="none" stroke="#e6f6ff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Title block -->
+  <text x="200" y="150" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="70" font-weight="800" letter-spacing="3" fill="#ffffff">QA AGENT</text>
+  <text x="202" y="192" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="18.5" fill="#aac6e8">Sistema QA multiagente para analizar riesgos, diseñar, ejecutar y validar con evidencia</text>
+  <text x="202" y="222" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="15.5" fill="#7f9dc4">OpenCode  ·  Web / PWA / API  ·  Node 24 + Playwright 1.64  ·  validador de contratos en Python 3</text>
+
+  <!-- Verified badges -->
+  <g font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="15" font-weight="600">
+    <g>
+      <rect x="64" y="262" width="132" height="36" rx="18" fill="#3b82f6" fill-opacity="0.12" stroke="#3b82f6" stroke-opacity="0.5"/>
+      <circle cx="86" cy="280" r="4" fill="#34d399"/>
+      <text x="100" y="285" fill="#cfe4ff">MIT License</text>
+    </g>
+    <g>
+      <rect x="208" y="262" width="120" height="36" rx="18" fill="#3b82f6" fill-opacity="0.12" stroke="#3b82f6" stroke-opacity="0.5"/>
+      <circle cx="230" cy="280" r="4" fill="#38bdf8"/>
+      <text x="244" y="285" fill="#cfe4ff">Node 24.x</text>
+    </g>
+    <g>
+      <rect x="340" y="262" width="180" height="36" rx="18" fill="#3b82f6" fill-opacity="0.12" stroke="#3b82f6" stroke-opacity="0.5"/>
+      <circle cx="362" cy="280" r="4" fill="#34d399"/>
+      <text x="376" y="285" fill="#cfe4ff">Playwright 1.64.0</text>
+    </g>
+    <g>
+      <rect x="532" y="262" width="130" height="36" rx="18" fill="#3b82f6" fill-opacity="0.12" stroke="#3b82f6" stroke-opacity="0.5"/>
+      <circle cx="554" cy="280" r="4" fill="#f59e0b"/>
+      <text x="568" y="285" fill="#cfe4ff">8 agentes</text>
+    </g>
+    <g>
+      <rect x="674" y="262" width="150" height="36" rx="18" fill="#3b82f6" fill-opacity="0.12" stroke="#3b82f6" stroke-opacity="0.5"/>
+      <circle cx="696" cy="280" r="4" fill="#38bdf8"/>
+      <text x="710" y="285" fill="#cfe4ff">M-01 … M-06</text>
+    </g>
+  </g>
+
+  <!-- Multi-agent network motif -->
+  <g>
+    <circle cx="1075" cy="175" r="112" fill="#3b82f6" fill-opacity="0.06"/>
+    <g stroke="#2f5c96" stroke-width="1.6" stroke-opacity="0.75">
+      <line x1="1075" y1="175" x2="1159" y2="175"/>
+      <line x1="1075" y1="175" x2="1134" y2="234"/>
+      <line x1="1075" y1="175" x2="1075" y2="259"/>
+      <line x1="1075" y1="175" x2="1016" y2="234"/>
+      <line x1="1075" y1="175" x2="991" y2="175"/>
+      <line x1="1075" y1="175" x2="1016" y2="116"/>
+      <line x1="1075" y1="175" x2="1075" y2="91"/>
+      <line x1="1075" y1="175" x2="1134" y2="116"/>
+    </g>
+    <g fill="#0e1b34" stroke="#38bdf8" stroke-width="2">
+      <circle cx="1159" cy="175" r="11"/>
+      <circle cx="1134" cy="234" r="11"/>
+      <circle cx="1075" cy="259" r="11"/>
+      <circle cx="1016" cy="234" r="11"/>
+      <circle cx="991" cy="175" r="11"/>
+      <circle cx="1016" cy="116" r="11"/>
+      <circle cx="1075" cy="91" r="11"/>
+      <circle cx="1134" cy="116" r="11"/>
+    </g>
+    <circle cx="1075" cy="175" r="26" fill="url(#brand)"/>
+    <circle cx="1075" cy="175" r="10" fill="#e6f6ff"/>
+  </g>
+
+  <line x1="64" y1="330" x2="1216" y2="330" stroke="#2b4a7a" stroke-opacity="0.5" stroke-width="1"/>
+  <text x="64" y="348" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="13" fill="#6d89ad">Riesgo -&gt; Diseno -&gt; Pre-flight -&gt; Test Data -&gt; Ejecucion -&gt; Evidencia -&gt; Revision -&gt; Consolidacion</text>
+</svg>

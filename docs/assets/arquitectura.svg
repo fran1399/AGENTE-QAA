@@ -1,0 +1,200 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 900" width="1240" height="900" role="img" aria-label="Diagrama de arquitectura de AGENTE-QAA">
+  <title>Arquitectura de AGENTE-QAA</title>
+  <defs>
+    <linearGradient id="aBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1425"/>
+      <stop offset="1" stop-color="#0d1a33"/>
+    </linearGradient>
+    <linearGradient id="aAccent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#22d3ee"/>
+      <stop offset="0.5" stop-color="#3b82f6"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5b86c4"/>
+    </marker>
+    <marker id="arrowCyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#22d3ee"/>
+    </marker>
+    <pattern id="aGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0 H0 V40" fill="none" stroke="#213a60" stroke-width="1" stroke-opacity="0.35"/>
+    </pattern>
+  </defs>
+
+  <rect x="0" y="0" width="1240" height="900" fill="url(#aBg)"/>
+  <rect x="0" y="0" width="1240" height="900" fill="url(#aGrid)"/>
+  <rect x="0" y="0" width="1240" height="6" fill="url(#aAccent)"/>
+
+  <text x="40" y="54" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="32" font-weight="800" fill="#e8f1ff">Arquitectura de AGENTE-QAA</text>
+  <text x="40" y="82" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="14.5" fill="#8aa6cb">El QA Core decide y valida · los adapters ejecutan y capturan · los contratos son la puerta de la consolidación</text>
+
+  <!-- ============ BAND 1: QA CORE ============ -->
+  <rect x="40" y="104" width="1160" height="168" rx="18" fill="#0e1a30" stroke="#24406b"/>
+  <text x="62" y="132" font-family="'Segoe UI',Arial,sans-serif" font-size="15" font-weight="700" fill="#7dd3fc" letter-spacing="0.5">QA CORE · decisión, evidencia y gobernanza</text>
+
+  <rect x="430" y="144" width="380" height="50" rx="12" fill="#17325c" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="620" y="167" text-anchor="middle" font-family="'Segoe UI',Arial,sans-serif" font-size="15.5" font-weight="700" fill="#eaf3ff">QA Lead · agente primario</text>
+  <text x="620" y="185" text-anchor="middle" font-family="'Segoe UI',Arial,sans-serif" font-size="10.5" fill="#9dc0e6">orquesta, delega y consolida (subagent_depth: 1)</text>
+
+  <line x1="620" y1="194" x2="620" y2="214" stroke="#2f5c96" stroke-width="2"/>
+  <line x1="84" y1="214" x2="1156" y2="214" stroke="#2f5c96" stroke-width="2"/>
+
+  <!-- 7 specialist chips -->
+  <g font-family="'Segoe UI',Arial,sans-serif" text-anchor="middle">
+    <line x1="140" y1="214" x2="140" y2="226" stroke="#2f5c96" stroke-width="2"/>
+    <rect x="66" y="226" width="148" height="42" rx="10" fill="#16294a" stroke="#2f5c96"/>
+    <text x="140" y="245" font-size="12.5" font-weight="700" fill="#dbeafe">Test Designer</text>
+    <text x="140" y="260" font-size="9.5" fill="#86a6cc">diseño y trazabilidad</text>
+
+    <line x1="300" y1="214" x2="300" y2="226" stroke="#2f5c96" stroke-width="2"/>
+    <rect x="226" y="226" width="148" height="42" rx="10" fill="#16294a" stroke="#2f5c96"/>
+    <text x="300" y="245" font-size="12.5" font-weight="700" fill="#dbeafe">Risk Analyst</text>
+    <text x="300" y="260" font-size="9.5" fill="#86a6cc">riesgo y prioridad</text>
+
+    <line x1="460" y1="214" x2="460" y2="226" stroke="#2f5c96" stroke-width="2"/>
+    <rect x="386" y="226" width="148" height="42" rx="10" fill="#16294a" stroke="#2f5c96"/>
+    <text x="460" y="245" font-size="12.5" font-weight="700" fill="#dbeafe">Exploratory QA</text>
+    <text x="460" y="260" font-size="9.5" fill="#86a6cc">exploración guiada</text>
+
+    <line x1="620" y1="214" x2="620" y2="226" stroke="#2f5c96" stroke-width="2"/>
+    <rect x="546" y="226" width="148" height="42" rx="10" fill="#16294a" stroke="#2f5c96"/>
+    <text x="620" y="245" font-size="12.5" font-weight="700" fill="#dbeafe">Test Data</text>
+    <text x="620" y="260" font-size="9.5" fill="#86a6cc">datos y trazabilidad</text>
+
+    <line x1="780" y1="214" x2="780" y2="226" stroke="#22d3ee" stroke-width="2"/>
+    <rect x="706" y="226" width="148" height="42" rx="10" fill="#1a3763" stroke="#22d3ee"/>
+    <text x="780" y="245" font-size="12.5" font-weight="700" fill="#d9f6ff">Test Executor</text>
+    <text x="780" y="260" font-size="9.5" fill="#8fdaf0">ejecuta y evidencia</text>
+
+    <line x1="940" y1="214" x2="940" y2="226" stroke="#2f5c96" stroke-width="2"/>
+    <rect x="866" y="226" width="148" height="42" rx="10" fill="#16294a" stroke="#2f5c96"/>
+    <text x="940" y="245" font-size="12.5" font-weight="700" fill="#dbeafe">Bug Analyst</text>
+    <text x="940" y="260" font-size="9.5" fill="#86a6cc">clasificación de fallos</text>
+
+    <line x1="1100" y1="214" x2="1100" y2="226" stroke="#2f5c96" stroke-width="2"/>
+    <rect x="1026" y="226" width="148" height="42" rx="10" fill="#16294a" stroke="#2f5c96"/>
+    <text x="1100" y="245" font-size="12.5" font-weight="700" fill="#dbeafe">QA Reviewer</text>
+    <text x="1100" y="260" font-size="9.5" fill="#86a6cc">revisión independiente</text>
+  </g>
+
+  <!-- ============ BAND 2: WORKFLOW ============ -->
+  <rect x="40" y="292" width="1160" height="100" rx="18" fill="#0e1a30" stroke="#24406b"/>
+  <text x="62" y="318" font-family="'Segoe UI',Arial,sans-serif" font-size="15" font-weight="700" fill="#7dd3fc" letter-spacing="0.5">FLUJO DE TRABAJO</text>
+
+  <g font-family="'Segoe UI',Arial,sans-serif" font-size="12.5" font-weight="600" text-anchor="middle">
+    <polygon points="64,334 178,334 194,355 178,376 64,376 80,355" fill="#16294a" stroke="#2f5c96"/>
+    <text x="124" y="360" fill="#dbeafe">Risk</text>
+    <polygon points="204,334 318,334 334,355 318,376 204,376 220,355" fill="#16294a" stroke="#2f5c96"/>
+    <text x="264" y="360" fill="#dbeafe">Design</text>
+    <polygon points="344,334 458,334 474,355 458,376 344,376 360,355" fill="#1d2f1c" stroke="#f59e0b"/>
+    <text x="404" y="360" fill="#fcd9a0">Pre-flight</text>
+    <polygon points="484,334 598,334 614,355 598,376 484,376 500,355" fill="#16294a" stroke="#2f5c96"/>
+    <text x="544" y="360" fill="#dbeafe">Test Data</text>
+    <polygon points="624,334 738,334 754,355 738,376 624,376 640,355" fill="#17325c" stroke="#3b82f6"/>
+    <text x="684" y="360" fill="#eaf3ff">Execution</text>
+    <polygon points="764,334 878,334 894,355 878,376 764,376 780,355" fill="#16294a" stroke="#2f5c96"/>
+    <text x="824" y="360" fill="#dbeafe">Evidence</text>
+    <polygon points="904,334 1018,334 1034,355 1018,376 904,376 920,355" fill="#12303a" stroke="#22d3ee"/>
+    <text x="964" y="360" fill="#c9f4ff">Review</text>
+    <polygon points="1044,334 1158,334 1174,355 1158,376 1044,376 1060,355" fill="#132f28" stroke="#34d399"/>
+    <text x="1104" y="360" fill="#bdf0df">Consolidation</text>
+  </g>
+
+  <line x1="620" y1="272" x2="620" y2="292" stroke="#5b86c4" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============ BAND 3: EXECUTION ============ -->
+  <rect x="40" y="412" width="1160" height="214" rx="18" fill="#0e1a30" stroke="#24406b"/>
+  <text x="62" y="440" font-family="'Segoe UI',Arial,sans-serif" font-size="15" font-weight="700" fill="#7dd3fc" letter-spacing="0.5">EJECUCIÓN Y AUTOMATIZACIÓN · adapters desacoplados del QA Core</text>
+
+  <rect x="66" y="452" width="196" height="146" rx="12" fill="#17325c" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="164" y="500" text-anchor="middle" font-family="'Segoe UI',Arial,sans-serif" font-size="13.5" font-weight="700" fill="#eaf3ff">Test Executor</text>
+  <text x="164" y="524" text-anchor="middle" font-family="'Segoe UI',Arial,sans-serif" font-size="10" fill="#9dc0e6">único agente con</text>
+  <text x="164" y="540" text-anchor="middle" font-family="'Segoe UI',Arial,sans-serif" font-size="10" fill="#9dc0e6">capacidad de ejecución</text>
+  <text x="164" y="566" text-anchor="middle" font-family="'Segoe UI',Arial,sans-serif" font-size="9.5" fill="#7dd3fc">pre-flight obligatorio</text>
+
+  <line x1="262" y1="485" x2="294" y2="485" stroke="#5b86c4" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <g font-family="'Segoe UI',Arial,sans-serif" text-anchor="middle">
+    <rect x="296" y="452" width="280" height="56" rx="12" fill="#16294a" stroke="#2f5c96"/>
+    <text x="436" y="478" font-size="13" font-weight="700" fill="#dbeafe">Playwright · Web / PWA</text>
+    <text x="436" y="495" font-size="10" fill="#86a6cc">adapter: playwright-qa</text>
+
+    <rect x="584" y="452" width="280" height="56" rx="12" fill="#16294a" stroke="#2f5c96"/>
+    <text x="724" y="478" font-size="13" font-weight="700" fill="#dbeafe">api-testing · API / HTTP</text>
+    <text x="724" y="495" font-size="10" fill="#86a6cc">adapter: api-testing</text>
+
+    <rect x="872" y="452" width="280" height="56" rx="12" fill="#16294a" stroke="#2f5c96"/>
+    <text x="1012" y="478" font-size="13" font-weight="700" fill="#dbeafe">SQLite · solo lectura</text>
+    <text x="1012" y="495" font-size="10" fill="#86a6cc">adapter M-06 · node:sqlite</text>
+  </g>
+
+  <text x="296" y="532" font-family="'Segoe UI',Arial,sans-serif" font-size="10.5" font-weight="700" fill="#5f86bd" letter-spacing="0.4">MÓDULOS AUTOMATIZADOS</text>
+
+  <g font-family="'Segoe UI',Arial,sans-serif" text-anchor="middle">
+    <rect x="296" y="540" width="206" height="58" rx="12" fill="#132a44" stroke="#2f5c96"/>
+    <text x="399" y="564" font-size="12" font-weight="700" fill="#dbeafe">M-03 · Runner</text>
+    <text x="399" y="581" font-size="9.5" fill="#86a6cc">Playwright, sin IA por paso</text>
+
+    <rect x="522" y="540" width="206" height="58" rx="12" fill="#132a44" stroke="#f59e0b" stroke-opacity="0.75"/>
+    <text x="625" y="564" font-size="12" font-weight="700" fill="#fcd9a0">M-04 · Pre-flight</text>
+    <text x="625" y="581" font-size="9.5" fill="#86a6cc">gate READY / BLOCKED</text>
+
+    <rect x="748" y="540" width="206" height="58" rx="12" fill="#132a44" stroke="#2f5c96"/>
+    <text x="851" y="564" font-size="12" font-weight="700" fill="#dbeafe">M-05 · Auto-healing</text>
+    <text x="851" y="581" font-size="9.5" fill="#86a6cc">OFF / OBSERVE / HIGH_CONF.</text>
+
+    <rect x="974" y="540" width="206" height="58" rx="12" fill="#132a44" stroke="#2f5c96"/>
+    <text x="1077" y="564" font-size="12" font-weight="700" fill="#dbeafe">M-02 · Reportes</text>
+    <text x="1077" y="581" font-size="9.5" fill="#86a6cc">report.json + report.html</text>
+  </g>
+
+  <line x1="620" y1="392" x2="620" y2="412" stroke="#5b86c4" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============ BAND 4: EVIDENCE + CONTRACTS ============ -->
+  <rect x="40" y="646" width="1160" height="168" rx="18" fill="#0e1a30" stroke="#24406b"/>
+  <text x="62" y="674" font-family="'Segoe UI',Arial,sans-serif" font-size="15" font-weight="700" fill="#7dd3fc" letter-spacing="0.5">EVIDENCIA, ARTEFACTOS Y CONTRATOS</text>
+
+  <g font-family="'Segoe UI',Arial,sans-serif" text-anchor="middle">
+    <rect x="66" y="690" width="240" height="64" rx="12" fill="#16294a" stroke="#2f5c96"/>
+    <text x="186" y="717" font-size="12.5" font-weight="700" fill="#dbeafe">qa/evidence/</text>
+    <text x="186" y="735" font-size="10" fill="#86a6cc">capturas · traces · logs</text>
+
+    <rect x="326" y="690" width="240" height="64" rx="12" fill="#16294a" stroke="#2f5c96"/>
+    <text x="446" y="717" font-size="12.5" font-weight="700" fill="#dbeafe">qa/**/*.json</text>
+    <text x="446" y="735" font-size="10" fill="#86a6cc">artefactos trazables</text>
+
+    <rect x="586" y="690" width="240" height="64" rx="12" fill="#16294a" stroke="#2f5c96"/>
+    <text x="706" y="717" font-size="12.5" font-weight="700" fill="#dbeafe">automation/.runs/</text>
+    <text x="706" y="735" font-size="10" fill="#86a6cc">salida del runner (efímera)</text>
+
+    <rect x="866" y="690" width="294" height="64" rx="12" fill="#12303a" stroke="#22d3ee" stroke-width="1.5"/>
+    <text x="1013" y="717" font-size="13" font-weight="700" fill="#c9f4ff">M-01 · validador de contratos</text>
+    <text x="1013" y="735" font-size="10" fill="#8fd6e6">Python 3 stdlib · JSON Schema · gate</text>
+  </g>
+
+  <line x1="830" y1="722" x2="862" y2="722" stroke="#5b86c4" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="620" y1="626" x2="620" y2="646" stroke="#5b86c4" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="632" y="642" font-family="'Segoe UI',Arial,sans-serif" font-size="10" fill="#5f86bd">produce</text>
+
+  <text x="66" y="784" font-family="'Segoe UI',Arial,sans-serif" font-size="11.5" fill="#7f9dc4">El gate no transforma resultados: un FAIL sigue FAIL, un Bug no se promueve y un artefacto inválido bloquea la consolidación.</text>
+
+  <!-- gate arrow: M-01 -> Consolidation -->
+  <path d="M1160 722 H1210 V355 H1180" fill="none" stroke="#22d3ee" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#arrowCyan)"/>
+  <text x="1182" y="560" font-family="'Segoe UI',Arial,sans-serif" font-size="10" fill="#7dd3fc" transform="rotate(-90 1182 560)" text-anchor="middle">gate · no consolida si es inválido</text>
+
+  <!-- ============ BAND 5: NOTES ============ -->
+  <g font-family="'Segoe UI',Arial,sans-serif" font-size="11.5" fill="#9dc0e6">
+    <rect x="40" y="832" width="212" height="34" rx="17" fill="#122a44" stroke="#2f5c96" stroke-opacity="0.7"/>
+    <text x="146" y="854" text-anchor="middle">MCP deshabilitado por defecto</text>
+
+    <rect x="266" y="832" width="196" height="34" rx="17" fill="#122a44" stroke="#2f5c96" stroke-opacity="0.7"/>
+    <text x="364" y="854" text-anchor="middle">read-only por defecto</text>
+
+    <rect x="476" y="832" width="182" height="34" rx="17" fill="#122a44" stroke="#2f5c96" stroke-opacity="0.7"/>
+    <text x="567" y="854" text-anchor="middle">mínimo privilegio</text>
+
+    <rect x="672" y="832" width="230" height="34" rx="17" fill="#122a44" stroke="#2f5c96" stroke-opacity="0.7"/>
+    <text x="787" y="854" text-anchor="middle">FAIL ≠ APP_BUG (clasificación)</text>
+  </g>
+  <text x="40" y="888" font-family="'Segoe UI',Arial,sans-serif" font-size="11" fill="#5f7ba0">Fuente: docs/AUTOMATION-ARCHITECTURE.md · opencode.json · .opencode/agents/*.md · qa/tools/</text>
+</svg>

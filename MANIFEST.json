@@ -1,7 +1,7 @@
 {
   "purpose": "OpenCode QA Agentic Multi-Agent System - Core + reference QA artifacts",
   "version": "1.13.0-core",
-  "generated": "2026-10-12",
+  "generated": "2026-10-13",
   "scope": "Repository inventory: QA Core infrastructure, automation (M-01..M-06), fixtures and reference QA artifacts (dcshoes). Excludes regenerables outputs (node_modules, automation/.dist, automation/.runs, automation/.artifacts) and Python bytecode. Paths use '/' separators. Every listed path exists in the tree.",
   "files": [
     ".gitignore",
@@ -60,6 +60,10 @@
     "automation/tests/runner.infra.spec.ts",
     "automation/tests/sqlite-adapter.spec.ts",
     "docs/AGENT-CONTRACTS.md",
+    "docs/assets/agentes.svg",
+    "docs/assets/arquitectura.svg",
+    "docs/assets/banner.svg",
+    "docs/assets/report-demo-web.png",
     "docs/AUTO-HEALING.md",
     "docs/AUTOMATION-ARCHITECTURE.md",
     "docs/CONTRACTS-VALIDATION.md",
