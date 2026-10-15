@@ -36,12 +36,11 @@ controlada de locators) y los **reportes de ejecución** (M-02, `report.json` +
    │  ├─ report.ts            # M-02: genera report.json + report.html por corrida
    │  ├─ sqlite-adapter.ts    # M-06: adaptador SQLite read-only (node:sqlite)
    │  └─ tsconfig.json        # build NodeNext → automation/.dist
-   ├─ manifests/              # suites: demo (SUITE-demo-qaa-web/api), DC Shoes (SUITE-dcshoes-tc001)
+   ├─ manifests/              # suites: demo (SUITE-demo-qaa-web/api)
    │                          #         y auto-healing demo (SUITE-heal-demo-off/observe/hc/hc-fail)
    ├─ specs/                  # automatización por app (test() ↔ test_name del manifest)
    │  ├─ demo-web/site.spec.ts
    │  ├─ demo-api/api.spec.ts
-   │  ├─ dcshoes/home.spec.ts # porte de TC-001 (solo navegación/lectura)
    │  └─ heal-demo/           # M-05: off / observe / hc / hc-fail (.spec.ts)
    ├─ scripts/
    │  ├─ verify-env.mjs       # verificación del entorno (read-only)
@@ -80,6 +79,22 @@ solo los artefactos de negocio curados.
 | `npm run suite -- --suite SUITE-heal-demo-off\|observe\|hc\|hc-fail [--autoheal-store <path>]` | Suites demo M-05; con `--autoheal-store` se comparte el store de reutilización entre corridas. |
 | `npm run suite -- --suite <id> [--tc <id>] [--out <dir>] [--manifest <path>]` | Runner genérico (exit 0/1/2/3). |
 | `npm run report` | Abre el reporte HTML generado. |
+
+### Ejecuciones de proyectos externos
+
+Para guardar resultados fuera del repositorio, separados por proyecto y ejecución:
+
+```bash
+npm run suite -- --suite <id> --out ../agente-qaa-runs/<projecto>/<ejecucion>
+```
+
+Ejemplo:
+
+```bash
+npm run suite -- --suite SUITE-demo-qaa-web --out ../agente-qaa-runs/demo-web/2026-10-14
+```
+
+> **Nota:** `--out` permite elegir el destino, pero no configura automáticamente ese comportamiento. Cada ejecución debe especificar la ruta deseada.
 
 Detalle del runner (manifiesto, exit codes, artefactos, evidence): ver
 `docs/RUNNER-M03.md`.

@@ -48,18 +48,25 @@ QA Analysis · Test Design · Exploratory Testing · Playwright · API Testing �
 Pre-flight · Evidence · Bug Analysis · Retest · Regression
 
 📊 **Reportes**<br>
-⚡ FAST → breve y directo · 🔎 DETAIL → completo, visual y técnico<br>
+⚡ FAST → breve, directo y con una conclusión en lenguaje claro · 🔎 DETAIL → completo, visual y técnico<br>
 Predeterminado: FAST · `REPORT_MODE: FAST` / `REPORT_MODE: DETAIL`
 
 🟢 PASS · 🔴 FAIL · 🟡 BLOCKED · ⚪ NOT VERIFIED
 
 ### 🚀 Para comenzar
 
+Hablá como quieras: no hace falta que uses términos técnicos ni que armes Test Cases. Por ejemplo:
+
+- «Probá la página de ejemplo».
+- «Hacé un smoke test rápido».
+- «Revisá si funciona el buscador».
+- «Mostrame el reporte HTML».
+
+Te pido solo los datos indispensables que falten. Y si preferís completar todo:
+
 🌐 **Aplicación / URL**<br>
 🧪 **Qué querés probar**<br>
 📌 **Scope**, si aplica<br>
 🔐 **Credenciales**, si el flujo requiere Login<br>
 📊 **FAST o DETAIL**, si querés elegirlo
-
-También podés simplemente describirme qué querés probar.
 ```

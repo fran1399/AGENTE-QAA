@@ -947,7 +947,7 @@ test('AUD-04: report.html resolves evidence links from its own directory', () =>
   }
 });
 
-test('AUD-04: missing evidence renders as a disabled (missing) link', () => {
+test('AUD-04: missing evidence renders as a disabled (faltante) link', () => {
   const outDir = join(REPO_ROOT, 'automation', '.artifacts', 'm03', `aud04-missing-${Date.now()}`);
   try {
     mkdirSync(outDir, { recursive: true });
@@ -957,7 +957,7 @@ test('AUD-04: missing evidence renders as a disabled (missing) link', () => {
       outDir,
     );
     expect(html).toContain('href="#"');
-    expect(html).toContain('(missing)');
+    expect(html).toContain('(faltante)');
   } finally {
     rmSync(outDir, { recursive: true, force: true });
   }
@@ -1954,7 +1954,7 @@ test('m03 playwright exit: unexplained non-zero is not success; normal fail/succ
     expect((uReport.infrastructure_errors ?? []).join(' ')).toMatch(/Playwright/i);
 
     const uHtml = readFileSync(join(unexplained.out, 'report.html'), 'utf8');
-    expect(uHtml).toContain('Infrastructure Errors');
+    expect(uHtml).toContain('Errores de infraestructura');
 
     const uSummary = readJson<{ playwright_exit_code?: number; infrastructure_errors?: number }>(join(unexplained.out, 'summary.json'));
     expect(uSummary.playwright_exit_code).toBe(1);

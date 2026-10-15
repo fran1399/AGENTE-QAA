@@ -2,9 +2,9 @@
 
 ![QA AGENT — sistema QA multiagente](docs/assets/banner.svg)
 
-**Navegación:** [¿Qué es?](#que-es) · [Capacidades](#capacidades) · [Arquitectura](#arquitectura) · [Equipo](#equipo) · [Módulos](#modulos) · [Captura](#captura) · [Requisitos](#requisitos) · [Primeros pasos](#primeros-pasos) · [Comandos](#comandos) · [Estructura](#estructura) · [Modos de reporte](#modos-de-reporte) · [Documentación](#documentacion) · [Alcance](#alcance) · [Licencia](#licencia)
+**Navegación:** [¿Qué es?](#que-es) · [Capacidades](#capacidades) · [Arquitectura](#arquitectura) · [Equipo](#equipo) · [Módulos](#modulos) · [Requisitos](#requisitos) · [Primeros pasos](#primeros-pasos) · [Comandos](#comandos) · [Estructura](#estructura) · [Modos de reporte](#modos-de-reporte) · [Documentación](#documentacion) · [Alcance](#alcance) · [Licencia](#licencia)
 
-**De un vistazo:** 8 agentes · módulos **M-01 … M-06 implementados** · **59** tests Playwright + **114** tests Python (unittest) · adapters **Playwright** (Web/PWA) y **api-testing** (API/HTTP) · MCP deshabilitado por defecto · Licencia **MIT**.
+**De un vistazo:** 8 agentes · módulos **M-01 … M-06 implementados** · **59** tests Playwright + **127** tests Python (unittest) · adapters **Playwright** (Web/PWA) y **api-testing** (API/HTTP) · MCP deshabilitado por defecto · Licencia **MIT**.
 
 ---
 
@@ -97,12 +97,7 @@ Detalle técnico de cada módulo: `docs/AUTOMATION-ARCHITECTURE.md` y los docume
 
 ---
 
-<a name="captura"></a>
-## Captura del reporte de ejecución
 
-![Reporte HTML generado por el runner (suite demo Web)](docs/assets/report-demo-web.png)
-
-Captura real del `report.html` que produce el runner (**M-02**) al correr la suite demo Web (`npm run suite:demo-web`): **Pre-flight `READY`** y **2 Test Cases en PASS** (`TC-DEMO-WEB-1`, `TC-DEMO-WEB-2`) contra la app local aislada en `127.0.0.1:4173`, sin red externa ni credenciales. El HTML se deriva siempre del `report.json`, por lo que ambos formatos quedan consistentes por construcción.
 
 ---
 
@@ -159,7 +154,7 @@ npm run build:runner       # compila el runner M-03 -> automation/.dist
 **Tests del runner (Playwright)**
 
 ```bash
-npm test                   # 59 tests: infra.smoke + runner.infra + sqlite-adapter
+npm test                   # 59 tests: infra.smoke (2) + runner.infra (32) + sqlite-adapter (25)
 npm run test:smoke         # solo el smoke de infraestructura
 ```
 
@@ -173,11 +168,12 @@ npm run suite:demo-api     # 2 TC -> automation/.runs/suite-demo-api/report.{jso
 **QA Core en Python (stdlib)**
 
 ```bash
-# Pruebas automatizadas de las herramientas (114 tests en total)
-python qa/tools/test_validate_contracts.py   # 38 tests (M-01)
+# Pruebas automatizadas de las herramientas (127 tests en total)
+python qa/tools/test_validate_contracts.py   # 39 tests (M-01)
 python qa/tools/test_preflight.py            # 48 tests (M-04)
 python qa/tools/test_data_verification.py    # 14 tests (M-06)
 python qa/tools/test_report_generator.py     # 14 tests (M-02)
+python qa/tools/test_render_qa_report.py     # 12 tests (renderizador)
 
 # Validación de contratos sobre un bundle de artefactos
 python qa/tools/validate_contracts.py --bundle qa/ --json
@@ -197,10 +193,10 @@ python qa/tools/preflight.py --requirements qa/tools/fixtures/preflight/requirem
 .
 ├─ .opencode/
 │  ├─ agents/            # 8 perfiles de agente (qa-lead primario + 7 subagentes)
-│  └─ skills/            # 12 procedimientos reutilizables (SKILL.md)
+│  └─ skills/            # 9 procedimientos reutilizables (SKILL.md)
 ├─ automation/           # Base de automatización (Node + Playwright), desacoplada del QA Core
 │  ├─ fixtures/          # App demo aislada (sin red externa ni credenciales)
-│  ├─ manifests/         # Suites declarativas (demo Web/API, auto-healing, dcshoes)
+│  ├─ manifests/         # Suites declarativas (demo Web/API, auto-healing)
 │  ├─ runner/            # Runner M-03 + reportes M-02 + auto-healing M-05 + SQLite M-06
 │  ├─ scripts/           # verify-env, servidores demo, base SQLite demo (M-06)
 │  ├─ specs/             # Especificaciones Playwright
@@ -209,10 +205,10 @@ python qa/tools/preflight.py --requirements qa/tools/fixtures/preflight/requirem
 │  └─ assets/            # Recursos gráficos del README (banner y diagramas)
 ├─ qa/                   # QA Runtime Data (gobernanza en Python + JSON)
 │  ├─ schema/            # JSON Schemas de los contratos (M-01)
-│  ├─ tools/             # Validador, pre-flight y sus pruebas
+│  ├─ tools/             # Validador, pre-flight, renderizador de reportes y sus pruebas
 │  ├─ evidence/          # Evidencia: capturas, traces, logs, console, network
 │  ├─ bugs/  reports/  memory/
-│  └─ tests/             # Artefactos QA de referencia (dcshoes)
+│  └─ tests/             # Artefactos QA de referencia (fixtures genéricos)
 ├─ tests/                # Definiciones de Test Case (raíz)
 ├─ AGENTS.md             # Reglas del sistema (flujo, clasificación, idioma, UI, modos)
 ├─ opencode.json         # default_agent, subagent_depth, permisos y MCP
@@ -225,7 +221,11 @@ python qa/tools/preflight.py --requirements qa/tools/fixtures/preflight/requirem
 <a name="modos-de-reporte"></a>
 ## Modos de reporte: FAST y DETAIL
 
-`REPORT_MODE: FAST` (por defecto) y `REPORT_MODE: DETAIL` cambian **solo la presentación y la profundidad** del reporte. No cambian los Test Cases ejecutados, los resultados, la Failure Classification, los Bugs, el riesgo, la evidencia ni la confianza. `BLOCKED` y `NOT VERIFIED` siempre se preservan. El *tipo* de prueba (smoke, regresión, etc.) depende del objetivo y el alcance, no del modo. Especificación completa: `docs/REPORT-MODES.md`.
+`REPORT_MODE: FAST` (por defecto) y `REPORT_MODE: DETAIL` cambian **solo la presentación y la profundidad** del reporte. No cambian los Test Cases ejecutados, los resultados, la Failure Classification, los Bugs, el riesgo, la evidencia ni la confianza. `BLOCKED` y `NOT VERIFIED` siempre se preservan. El *tipo* de prueba (smoke, regresión, etc.) depende del objetivo y el alcance, no del modo.
+
+El reporte **FAST** abre con una conclusión en lenguaje claro (qué se probó, qué funcionó, qué problemas se encontraron, qué quedó sin verificar y dónde está el reporte HTML cuando se pidió o generó) y prioriza las verificaciones esenciales del alcance solicitado; solo agrega repeticiones, cruces o revisiones extra cuando resuelven una incertidumbre concreta o confirman un posible defecto. **DETAIL** conserva el análisis ampliado, el detalle técnico y las explicaciones para investigar los resultados. Especificación completa: `docs/REPORT-MODES.md`.
+
+El **reporte HTML** comparte la jerarquía canónica única definida en `docs/REPORT-MODES.md` (Resumen ejecutivo → Métricas → Alcance → Pre-flight → Resultados → Datos de prueba → Clasificación de fallos → Bugs → Riesgos → Sin verificar / Bloqueado → Evidencia → Trazabilidad / adapters → Retest / Regresión → QA Reviewer → Conclusión, con las secciones opcionales solo cuando tienen datos) y se genera desde un modelo JSON con el renderizador reutilizable `qa/tools/render_qa_report.py`. El mismo modelo produce el reporte HTML (`--out`) y el resumen ejecutivo del chat (`--summary`), las métricas se derivan del detalle (los contadores y el **riesgo máximo** no pueden contradecir las secciones) y los enlaces de evidencia apuntan a archivos reales, señalando cuándo son locales.
 
 ---
 

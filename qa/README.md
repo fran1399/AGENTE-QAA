@@ -26,3 +26,17 @@ Run it before consolidating results:
 ```bash
 python qa/tools/validate_contracts.py --bundle qa/
 ```
+
+## Report rendering
+
+The shared HTML report renderer lives in `qa/tools/` (see `docs/REPORT-MODES.md`):
+
+- `tools/render_qa_report.py` - renders the report model (JSON) into the canonical QA HTML report.
+
+```bash
+python qa/tools/render_qa_report.py --model qa/reports/<report>.model.json --out qa/reports/<report>.html
+# FAST chat summary, from the SAME model (cannot contradict the HTML):
+python qa/tools/render_qa_report.py --model qa/reports/<report>.model.json --summary
+```
+
+It derives the metrics from the data (counts, Maximum Risk, confirmed Bugs), renders only the sections that have data and keeps the AGENTE-QAA visual identity (light/dark).

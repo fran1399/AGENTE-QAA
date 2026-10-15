@@ -19,7 +19,8 @@
     "execution-trace": { "schema": "execution-trace.schema.json", "shape": "wrapper", "records_key": "traces", "id_key": "trace_id", "wrapper_required": ["suite_id", "traces"] },
     "auto-heal-record": { "schema": "auto-heal-record.schema.json", "shape": "record-or-array", "id_key": "heal_id" },
     "execution-report": { "schema": "execution-report.schema.json", "shape": "record", "id_key": "report_id" },
-    "data-verification": { "schema": "data-verification.schema.json", "shape": "record-or-array", "id_key": "verification_id" }
+    "data-verification": { "schema": "data-verification.schema.json", "shape": "record-or-array", "id_key": "verification_id" },
+    "qa-report-model": { "schema": "qa-report-model.schema.json", "shape": "record", "id_key": "report_model_id" }
   },
   "artifact_hints": {
     "heal_id": "auto-heal-record",
@@ -38,7 +39,8 @@
     "verification_id": "data-verification",
     "verdict": "reviewer-verdict",
     "final_conclusion": "lead-consolidation-report",
-    "agent": "generic-result"
+    "agent": "generic-result",
+    "report_model_id": "qa-report-model"
   },
   "wrapper_hints": {
     "test_cases": "test-case",

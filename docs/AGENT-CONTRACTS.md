@@ -385,6 +385,46 @@ Complete execution report for a runner suite run. Generated as `report.json` (st
 - The HTML report is generated from the JSON report with proper HTML escaping (XSS-safe).
 - No credentials, tokens, or environment variable values are included in either format.
 
+## QA Report Model
+
+Consolidated, presentation-only model of a QA result. It is the **single source** from which the shared HTML report (`qa/tools/render_qa_report.py`) and the FAST chat summary are generated, so both surfaces stay consistent by construction. Schema: `qa/schema/qa-report-model.schema.json`; structure: `docs/REPORT-MODES.md` ("Report structure, all surfaces").
+
+```json
+{
+  "report_model_id": "QRM-<id>",
+  "source_artifacts": [{"path": "automation/.runs/.../result.json", "contract": "test-result", "note": ""}],
+  "meta": {
+    "title": "Smoke Test — <app>",
+    "status": "PASS | FAIL | PARTIAL | BLOCKED | SKIPPED",
+    "mode": "FAST | DETAIL",
+    "max_risk_override": "LOW | MEDIUM | HIGH | CRITICAL",
+    "max_risk_override_reason": ""
+  },
+  "executive_summary": {"tested": "", "worked": "", "problems": "", "unverified": "", "report": ""},
+  "scope": {"in": "", "out": ""},
+  "preflight": {"result": "READY | BLOCKED | SKIPPED", "checks": [{"label": "", "value": ""}]},
+  "results": [{"id": "TC-001", "title": "", "status": "PASS | FAIL | BLOCKED | NOT VERIFIED | SKIPPED", "confidence": "HIGH", "classification": "APP_BUG"}],
+  "test_data": [{"id": "TD-001", "description": "", "state": "AVAILABLE", "usable": true, "blocked_tests": []}],
+  "failure_classifications": [{"test_id": "TC-001", "classification": "TEST_INFRASTRUCTURE", "outcome": "", "is_bug": false, "rationale": ""}],
+  "bugs": {"confirmed": [{"id": "", "title": "", "severity": "", "priority": "", "confidence": "", "evidence": []}], "investigated": [{"id": "TC-001", "title": "", "outcome": "NOT_A_BUG", "confidence": "HIGH"}]},
+  "risks": [{"id": "R-001", "title": "", "level": "MEDIUM", "impact": "", "probability": "", "priority": "P2", "confidence": "MEDIUM", "note": ""}],
+  "not_verified": ["..."],
+  "evidence": [{"path": "automation/.runs/.../shot.png", "label": "", "type": "screenshot", "note": ""}],
+  "traceability": {"adapter": "playwright-qa", "steps": ["tool_requested", "tool_executed", "execution_success", "result_obtained", "result_validated"], "note": ""},
+  "retest": [{"id": "RT-001", "related_bug_id": "", "related_test_case_id": "", "result": "PASS", "fix_status": "FIXED"}],
+  "reviewer": {"status": "ACCEPT | CHALLENGE | INSUFFICIENT_EVIDENCE | BLOCKED", "verdict": "", "reason": "", "impact": "", "note": ""},
+  "conclusion": ["", ""]
+}
+```
+
+Rules:
+
+- **Projection, not a contract.** The model consolidates data that already exists in the source artifacts (`source_artifacts`); it never re-declares another contract nor upgrades a FAIL into a PASS or an uncertain finding into a CONFIRMED Bug. Per-item `source_ref` (when present) points back to the origin.
+- **Detection.** `report_model_id` (pattern `^QRM-`) is the top-level hint that identifies the artifact as this contract.
+- **Derived metrics.** Counts, confirmed Bugs, Maximum Risk and QA Reviewer state are computed by the consumer from `results`, `bugs.confirmed`, `risks` and `reviewer`. They are **not stored** in the model, so a report cannot contradict its own data.
+- **One primary location per finding.** The FAIL rationale lives only in `failure_classifications[]`; `bugs.investigated[]` is a short index (id, title, outcome, confidence) without repeating it; the `conclusion` is forward-looking and does not restate the Executive summary.
+- **Optional sections.** `preflight`, `test_data`, `retest`, `evidence`, `not_verified` and `source_artifacts` appear only when they have data; a consumer renders a section only when it is present.
+
 ## Data Verification (M-06)
 
 Result of a QA data verification against a read-only database. The adapter executes a read-only SQL query and contrasts the obtained data with an expected condition. Canonical source: `automation/runner/sqlite-adapter.ts`.

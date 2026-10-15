@@ -1,0 +1,273 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "QA Report Model",
+  "description": "Consolidated, presentation-only model of a QA result. It is the single source from which the HTML report (qa/tools/render_qa_report.py) and the FAST/chat summary are generated, so both surfaces cannot contradict each other. Canonical source: docs/AGENT-CONTRACTS.md; structure: docs/REPORT-MODES.md. The model projects only what the report needs and keeps traceability to the source artifacts (source_artifacts + per-item source refs); it never re-declares a contract. Metrics (counts, confirmed Bugs, Maximum Risk, QA Reviewer state) are NEVER stored in the model: the renderer derives them from `results`, `risks`, `bugs.confirmed` and `reviewer`, so the summary cannot contradict the detail. A FAIL never becomes a Bug without its Failure Classification, and an uncertain finding is never promoted.",
+  "type": "object",
+  "required": ["report_model_id", "meta", "results"],
+  "properties": {
+    "report_model_id": {
+      "description": "Unique model id (also used for contract detection).",
+      "type": "string",
+      "pattern": "^QRM-[A-Za-z0-9._-]+$"
+    },
+    "source_artifacts": {
+      "description": "Origin artifacts this model consolidates (traceability). Paths are repo-relative; contract is the AGENT-CONTRACTS name when known.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path"],
+        "properties": {
+          "contract": { "type": "string" },
+          "path": { "type": "string", "minLength": 1 },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "required": ["title"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "app": { "type": "string" },
+        "platform": { "type": "string" },
+        "target": { "type": "string" },
+        "scope_summary": { "type": "string" },
+        "run_ref": { "type": "string" },
+        "report_id": { "type": "string" },
+        "generated_at": { "type": "string" },
+        "mode": { "enum": ["FAST", "DETAIL"] },
+        "status": { "enum": ["PASS", "FAIL", "PARTIAL", "BLOCKED", "SKIPPED"] },
+        "status_note": { "type": "string" },
+        "max_risk_override": { "$ref": "#/$defs/riskLevel" },
+        "max_risk_override_reason": { "type": "string" }
+      }
+    },
+    "executive_summary": {
+      "description": "Synthesis only: the canonical detail of each finding lives in its own section (Failure Classification, Bugs, Risks).",
+      "type": "object",
+      "properties": {
+        "tested": { "type": "string" },
+        "worked": { "type": "string" },
+        "problems": { "type": "string" },
+        "unverified": { "type": "string" },
+        "report": { "type": "string" }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "in": { "type": "string" },
+        "out": { "type": "string" }
+      }
+    },
+    "preflight": {
+      "type": "object",
+      "properties": {
+        "result": { "enum": ["READY", "BLOCKED", "SKIPPED"] },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["label"],
+            "properties": {
+              "label": { "type": "string", "minLength": 1 },
+              "value": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "results": {
+      "description": "One row per Test Case. A FAIL row must carry its Failure Classification (FAIL is not APP_BUG automatically).",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "status"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1 },
+          "status": { "$ref": "#/$defs/resultStatus" },
+          "confidence": { "$ref": "_common.schema.json#/$defs/confidence" },
+          "classification": { "$ref": "_common.schema.json#/$defs/failureCategory" }
+        },
+        "allOf": [
+          {
+            "if": {
+              "required": ["status"],
+              "properties": { "status": { "const": "FAIL" } }
+            },
+            "then": { "required": ["classification"] }
+          }
+        ]
+      }
+    },
+    "test_data": {
+      "description": "Test Data states and blocks, when applicable. Never invent data values.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "description"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["AVAILABLE", "MISSING", "INVALID", "EXPIRED", "CONSUMED", "UNVERIFIED"] },
+          "usable": { "type": "boolean" },
+          "blocked_tests": { "type": "array", "items": { "type": "string" } },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "failure_classifications": {
+      "description": "Canonical place where each FAIL is explained. Bugs/executive summary must not repeat this rationale.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["test_id", "classification"],
+        "properties": {
+          "test_id": { "type": "string", "minLength": 1 },
+          "classification": { "$ref": "_common.schema.json#/$defs/failureCategory" },
+          "outcome": { "type": "string" },
+          "is_bug": { "type": "boolean" },
+          "rationale": { "type": "string" },
+          "confidence": { "$ref": "_common.schema.json#/$defs/confidence" },
+          "bug_id": { "type": "string" },
+          "source_ref": { "type": "string" }
+        }
+      }
+    },
+    "bugs": {
+      "type": "object",
+      "properties": {
+        "confirmed": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "title"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "title": { "type": "string", "minLength": 1 },
+              "severity": { "$ref": "_common.schema.json#/$defs/severity" },
+              "priority": { "$ref": "_common.schema.json#/$defs/priority" },
+              "confidence": { "$ref": "_common.schema.json#/$defs/confidence" },
+              "evidence": { "type": "array", "items": { "type": "string" } },
+              "note": { "type": "string" },
+              "source_ref": { "type": "string" }
+            }
+          }
+        },
+        "investigated": {
+          "description": "Index of investigated / not-a-bug findings. The full rationale lives in failure_classifications, so it is not repeated here.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "title"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "title": { "type": "string", "minLength": 1 },
+              "outcome": { "type": "string" },
+              "confidence": { "$ref": "_common.schema.json#/$defs/confidence" }
+            }
+          }
+        }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "level"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1 },
+          "level": { "$ref": "#/$defs/riskLevel" },
+          "impact": { "type": "string" },
+          "probability": { "type": "string" },
+          "priority": { "$ref": "_common.schema.json#/$defs/priority" },
+          "confidence": { "$ref": "_common.schema.json#/$defs/confidence" },
+          "note": { "type": "string" },
+          "source_ref": { "type": "string" }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "label": { "type": "string" },
+          "type": { "$ref": "_common.schema.json#/$defs/evidenceType" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "not_verified": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "type": "string", "minLength": 1 },
+          {
+            "type": "object",
+            "required": ["item"],
+            "properties": {
+              "item": { "type": "string", "minLength": 1 },
+              "note": { "type": "string" }
+            }
+          }
+        ]
+      }
+    },
+    "traceability": {
+      "type": "object",
+      "properties": {
+        "adapter": { "type": "string" },
+        "steps": { "type": "array", "items": { "type": "string" } },
+        "note": { "type": "string" }
+      }
+    },
+    "retest": {
+      "description": "Retest / Regression records, when applicable. Only executed retests are results.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "related_bug_id": { "type": "string" },
+          "related_test_case_id": { "type": "string" },
+          "result": { "$ref": "_common.schema.json#/$defs/resultStatus" },
+          "fix_status": { "enum": ["FIXED", "NOT_FIXED", "INDETERMINATE"] },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "reviewer": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": { "enum": ["ACCEPT", "CHALLENGE", "INSUFFICIENT_EVIDENCE", "BLOCKED"] },
+        "verdict": { "type": "string" },
+        "reason": { "type": "string" },
+        "impact": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+    "conclusion": {
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      ]
+    }
+  },
+  "$defs": {
+    "resultStatus": {
+      "description": "Status shown for a report result row. Extends the execution result status with the explicit NOT VERIFIED state.",
+      "enum": ["PASS", "FAIL", "BLOCKED", "NOT VERIFIED", "SKIPPED"]
+    },
+    "riskLevel": {
+      "description": "Risk level (AGENT-CONTRACTS Risk Record).",
+      "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
+    }
+  }
+}

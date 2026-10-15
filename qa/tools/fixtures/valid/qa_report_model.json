@@ -1,0 +1,41 @@
+{
+  "report_model_id": "QRM-fixture-valid",
+  "source_artifacts": [
+    { "path": "automation/.runs/fixture/result.json", "note": "Fixture source artifact." }
+  ],
+  "meta": {
+    "title": "Fixture QA report model",
+    "app": "fixture-app",
+    "platform": "Web / PWA",
+    "mode": "FAST",
+    "status": "PASS"
+  },
+  "executive_summary": {
+    "tested": "Fixture scope.",
+    "worked": "The fixture home rendered.",
+    "problems": "None.",
+    "unverified": "Nothing pending.",
+    "report": "qa/reports/fixture.html"
+  },
+  "scope": { "in": "Fixture scope.", "out": "Out of scope." },
+  "preflight": {
+    "result": "READY",
+    "checks": [{ "label": "Adapter", "value": "Playwright disponible" }]
+  },
+  "results": [
+    { "id": "TC-FIX-1", "title": "Home loads", "status": "PASS", "confidence": "HIGH" }
+  ],
+  "risks": [
+    {
+      "id": "R-1",
+      "title": "Fixture risk",
+      "level": "LOW",
+      "impact": "LOW",
+      "probability": "LOW",
+      "priority": "P3",
+      "confidence": "HIGH"
+    }
+  ],
+  "reviewer": { "status": "ACCEPT", "verdict": "ACCEPT", "reason": "Fixture reviewed." },
+  "conclusion": ["Fixture conclusion."]
+}

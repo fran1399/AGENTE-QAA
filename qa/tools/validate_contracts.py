@@ -16,7 +16,7 @@ never promoted, and a verdict is never turned into ACCEPT.
 
 Usage:
     python qa/tools/validate_contracts.py --list
-    python qa/tools/validate_contracts.py --contract test-case --file qa/tests/dcshoes_tc.json
+    python qa/tools/validate_contracts.py --contract test-case --file qa/tools/fixtures/valid/test_case.suite.json
     python qa/tools/validate_contracts.py --bundle qa/
     python qa/tools/validate_contracts.py --bundle qa/ --json
     python qa/tools/validate_contracts.py --bundle qa/ --check-evidence

@@ -1028,7 +1028,7 @@ async function main(): Promise<number> {
   const selected = selectTestCases(manifest, args.tc);
   const runId = makeRunId();
   // Default out lives OUTSIDE qa/ on purpose: the M-01 bundle (`--bundle qa`)
-  // must keep discovering only the curated business artifacts (dcshoes). Run
+  // must keep discovering only the curated business artifacts. Run
   // dirs are validated individually with `--bundle <out>`.
   const outDir = resolve(args.out ?? join(REPO_ROOT, 'automation', '.runs', manifest.suite_id, runId));
   // M-05: mode from the manifest need (OFF by default). The store defaults to

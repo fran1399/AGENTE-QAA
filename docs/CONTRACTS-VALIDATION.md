@@ -45,6 +45,7 @@ The validator is a **gatekeeper, not a decision maker**:
 | Exploratory Finding | `exploratory-finding.schema.json` | object or array |
 | Memory Record | `memory-record.schema.json` | object or array |
 | Execution Trace | `execution-trace.schema.json` | wrapper `{..., "traces": [...]}` |
+| QA Report Model | `qa-report-model.schema.json` | single object (`report_model_id` hint) |
 
 Shared definitions (`confidence`, severity/priority, evidence items, Failure
 Classification categories, traceability) live in `_common.schema.json`.
@@ -58,7 +59,7 @@ Requires only Python 3 (standard library). No third-party packages, no Node.
 python qa/tools/validate_contracts.py --list
 
 # Validate one artifact against a known contract
-python qa/tools/validate_contracts.py --contract test-case --file qa/tests/dcshoes_tc.json
+python qa/tools/validate_contracts.py --contract test-case --file qa/tools/fixtures/valid/test_case_suite.json
 
 # Validate everything found under qa/ and check cross-artifact references
 python qa/tools/validate_contracts.py --bundle qa/
@@ -204,7 +205,7 @@ reported `VALID` under a rule that was not evaluated.
 These were found while mapping the existing artifacts in `qa/` to the contracts.
 No existing artifact was modified; the schemas accept the current shapes.
 
-1. **Test Case is stored as a suite wrapper.** `qa/tests/dcshoes_tc.json` is
+1. **Test Case is stored as a suite wrapper.** `qa/tools/fixtures/valid/test_case.suite.json` is
    `{suite_id, ..., test_cases: [...]}`, while the contract shows a single Test
    Case. The validator extracts records from the wrapper. *No migration needed.*
 2. **Bug Record field aliases.** Artifacts use `expected_result`/`observed`; the

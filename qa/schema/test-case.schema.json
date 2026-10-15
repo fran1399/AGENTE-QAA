@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Test Case",
-  "description": "A single Test Case record. Canonical source: docs/AGENT-CONTRACTS.md. Suite artifacts (for example qa/tests/dcshoes_tc.json) wrap these records under a 'test_cases' array; the validator extracts them.",
+  "description": "A single Test Case record. Canonical source: docs/AGENT-CONTRACTS.md. Suite artifacts (for example qa/tools/fixtures/valid/test_case.suite.json) wrap these records under a 'test_cases' array; the validator extracts them.",
   "type": "object",
   "properties": {
     "test_case_id": { "type": "string", "pattern": "^TC-[A-Za-z0-9._-]+$" },

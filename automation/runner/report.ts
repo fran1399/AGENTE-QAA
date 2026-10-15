@@ -201,6 +201,36 @@ function formatDate(iso: string): string {
   }
 }
 
+// Plain-language outcome derived from the execution data only (never invented):
+// it lists the non-PASS signals actually present in the report.
+function describeOutcome(report: ExecutionReport): string {
+  const s = report.summary;
+  const bits: string[] = [];
+  if (s.failed > 0) bits.push(`${s.failed} FAIL`);
+  if (s.errors > 0) bits.push(`${s.errors} error(es)`);
+  if (s.blocked > 0) bits.push(`${s.blocked} BLOCKED`);
+  if (s.skipped > 0) bits.push(`${s.skipped} omitido(s)`);
+  if (report.infrastructure_errors.length > 0) bits.push(`${report.infrastructure_errors.length} error(es) de infraestructura`);
+  if (report.preflight.result === 'BLOCKED') bits.push('pre-flight BLOCKED');
+  return bits.length > 0 ? bits.join(' · ') : 'sin señales de fallo';
+}
+
+// One-line conclusion derived from the execution state. It never claims a Bug
+// or a validation that the runner cannot establish.
+function buildConclusion(report: ExecutionReport): string {
+  const s = report.summary;
+  const clean =
+    report.overall_status === 'PASS' &&
+    s.failed === 0 &&
+    s.errors === 0 &&
+    s.blocked === 0 &&
+    report.infrastructure_errors.length === 0;
+  if (clean) {
+    return 'La ejecución terminó en PASS, sin errores de infraestructura. Los resultados se derivan de esta corrida; la confirmación de Bugs y la validación independiente corresponden al análisis de QA (Bug Analyst / QA Reviewer).';
+  }
+  return `La ejecución terminó en ${report.overall_status} (${describeOutcome(report)}). Un FAIL no equivale a Bug: debe clasificarse (Failure Classification) antes de confirmar cualquier defecto. Este reporte cubre únicamente la ejecución de la suite.`;
+}
+
 export function renderReportHtml(report: ExecutionReport, repoRoot: string, outDir: string): string {
   const r = report;
   const s = r.summary;
@@ -213,8 +243,8 @@ export function renderReportHtml(report: ExecutionReport, repoRoot: string, outD
       const abs = resolve(repoRoot, ev);
       const exists = existsSync(abs);
       const href = exists ? reportHref(outDir, abs) : '#';
-      const label = exists ? ev : `${ev} (missing)`;
-      return `<li><a href="${escapeHtml(href)}">${escapeHtml(label)}</a>${exists ? '' : ' <span class="missing">(missing)</span>'}</li>`;
+      const label = exists ? ev : `${ev} (faltante)`;
+      return `<li><a href="${escapeHtml(href)}">${escapeHtml(label)}</a>${exists ? '' : ' <span class="missing">(faltante)</span>'}</li>`;
     }).join('');
     const errorCell = c.error ? `<td class="error" title="${escapeHtml(c.error)}">${escapeHtml(c.error)}</td>` : '<td>—</td>';
     const blockCell = c.block_reason ? `<td class="error" title="${escapeHtml(c.block_reason)}">${escapeHtml(c.block_reason)}</td>` : '<td>—</td>';
@@ -259,27 +289,27 @@ export function renderReportHtml(report: ExecutionReport, repoRoot: string, outD
   <section class="card-section">
     <h2><span class="section-icon">🔄</span> Auto-healing (M-05)</h2>
     <div class="metrics-row">
-      <div class="metric"><span class="metric-value">${escapeHtml(r.auto_healing!.mode)}</span><span class="metric-label">Mode</span></div>
-      <div class="metric"><span class="metric-value">${r.auto_healing!.attempts}</span><span class="metric-label">Attempts</span></div>
-      <div class="metric"><span class="metric-value">${r.auto_healing!.recoveries_used}</span><span class="metric-label">Recoveries Used</span></div>
-      <div class="metric"><span class="metric-value">${r.auto_healing!.reused}</span><span class="metric-label">Reused</span></div>
-      <div class="metric"><span class="metric-value">${r.auto_healing!.duplicate_prevented}</span><span class="metric-label">Duplicate Prevented</span></div>
-      <div class="metric"><span class="metric-value">${r.auto_healing!.ai_calls}</span><span class="metric-label">AI Calls</span></div>
+      <div class="metric"><span class="metric-value">${escapeHtml(r.auto_healing!.mode)}</span><span class="metric-label">Modo</span></div>
+      <div class="metric"><span class="metric-value">${r.auto_healing!.attempts}</span><span class="metric-label">Intentos</span></div>
+      <div class="metric"><span class="metric-value">${r.auto_healing!.recoveries_used}</span><span class="metric-label">Recuperaciones usadas</span></div>
+      <div class="metric"><span class="metric-value">${r.auto_healing!.reused}</span><span class="metric-label">Reutilizadas</span></div>
+      <div class="metric"><span class="metric-value">${r.auto_healing!.duplicate_prevented}</span><span class="metric-label">Duplicados evitados</span></div>
+      <div class="metric"><span class="metric-value">${r.auto_healing!.ai_calls}</span><span class="metric-label">Llamadas IA</span></div>
     </div>
   </section>` : '';
 
   const infraErrorsSection = hasInfraErrors ? `
   <section class="card-section">
-    <h2><span class="section-icon">⚠️</span> Infrastructure Errors</h2>
+    <h2><span class="section-icon">⚠️</span> Errores de infraestructura</h2>
     <ul class="error-list">${r.infrastructure_errors.map((e) => `<li>${escapeHtml(e)}</li>`).join('')}</ul>
   </section>` : '';
 
   const evidenceIndexSection = r.evidence_index.length > 0 ? `
   <section class="card-section">
-    <h2><span class="section-icon">📎</span> Evidence Index</h2>
+    <h2><span class="section-icon">📎</span> Índice de evidencia</h2>
     <div class="table-wrapper">
       <table>
-        <thead><tr><th>Path</th><th>Type</th><th>Test Case</th></tr></thead>
+        <thead><tr><th>Ruta</th><th>Tipo</th><th>Caso de prueba</th></tr></thead>
         <tbody>
           ${r.evidence_index.map((e) => {
             const href = reportHref(outDir, resolve(repoRoot, e.path));
@@ -295,11 +325,11 @@ export function renderReportHtml(report: ExecutionReport, repoRoot: string, outD
   </section>` : '';
 
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Execution Report — ${escapeHtml(r.suite_id)}</title>
+  <title>Reporte de ejecución — ${escapeHtml(r.suite_id)}</title>
   <style>
     :root {
       --bg-primary: #0f172a;
@@ -493,6 +523,12 @@ export function renderReportHtml(report: ExecutionReport, repoRoot: string, outD
       .header { position: static; }
       body { background: white; color: black; }
     }
+
+    /* Executive summary / conclusion (shared report hierarchy) */
+    .exec-list { list-style: none; padding: 0; display: grid; gap: 0.5rem; }
+    .exec-list li { font-size: 0.9rem; }
+    .exec-k { color: var(--text-muted); font-weight: 700; }
+    .conclusion-text { font-size: 0.92rem; color: var(--text-secondary); }
   </style>
 </head>
 <body>
@@ -500,11 +536,11 @@ export function renderReportHtml(report: ExecutionReport, repoRoot: string, outD
     <header class="header">
       <div class="brand">
         <span class="brand-icon">🧪</span>
-        <span class="brand-text">QA Agent</span>
+        <span class="brand-text">AGENTE-QAA</span>
       </div>
-      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark/light mode">
-        <span id="theme-icon">☀️</span>
-        <span id="theme-text">Light mode</span>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">
+        <span id="theme-icon">🌙</span>
+        <span id="theme-text">Modo oscuro</span>
       </button>
     </header>
 
@@ -520,29 +556,40 @@ export function renderReportHtml(report: ExecutionReport, repoRoot: string, outD
       </div>
       <div class="meta-row">
         <div class="meta-item"><span class="meta-label">App:</span> ${escapeHtml(r.app)}</div>
-        <div class="meta-item"><span class="meta-label">Platform:</span> ${escapeHtml(r.platform)}</div>
-        <div class="meta-item"><span class="meta-label">Started:</span> ${formatDate(r.started_at)}</div>
-        <div class="meta-item"><span class="meta-label">Duration:</span> ${formatDuration(r.duration_ms)}</div>
+        <div class="meta-item"><span class="meta-label">Plataforma:</span> ${escapeHtml(r.platform)}</div>
+        <div class="meta-item"><span class="meta-label">Inicio:</span> ${formatDate(r.started_at)}</div>
+        <div class="meta-item"><span class="meta-label">Duración:</span> ${formatDuration(r.duration_ms)}</div>
       </div>
     </div>
 
+    <section class="card-section">
+      <h2><span class="section-icon">🗣️</span> Resumen ejecutivo</h2>
+      <ul class="exec-list">
+        <li><span class="exec-k">Qué se probó:</span> ${escapeHtml(r.app)} · ${escapeHtml(r.platform)} · suite ${escapeHtml(r.suite_id)} · ${s.selected} Test Case(s) seleccionado(s).</li>
+        <li><span class="exec-k">Qué funcionó:</span> ${s.passed} de ${s.selected} en PASS.</li>
+        <li><span class="exec-k">Problemas encontrados:</span> ${escapeHtml([s.failed > 0 ? `${s.failed} FAIL` : '', s.errors > 0 ? `${s.errors} error(es)` : '', r.infrastructure_errors.length > 0 ? `${r.infrastructure_errors.length} error(es) de infraestructura` : ''].filter(Boolean).join(' · ') || 'sin FAIL ni errores')}.</li>
+        <li><span class="exec-k">Sin verificar / bloqueado:</span> ${escapeHtml([s.blocked > 0 ? `${s.blocked} BLOCKED` : '', s.skipped > 0 ? `${s.skipped} omitido(s)` : '', r.preflight.result === 'BLOCKED' ? 'pre-flight BLOCKED' : ''].filter(Boolean).join(' · ') || 'nada pendiente')}.</li>
+        <li><span class="exec-k">Reporte:</span> <span class="mono">report.html</span> (este archivo) y <span class="mono">report.json</span> en la carpeta de la corrida.</li>
+      </ul>
+    </section>
+
     <div class="summary-grid">
-      <div class="summary-card total"><div class="value">${s.selected}</div><div class="label">Selected</div></div>
-      <div class="summary-card pass"><div class="value">${s.passed}</div><div class="label">Passed</div></div>
-      <div class="summary-card fail"><div class="value">${s.failed}</div><div class="label">Failed</div></div>
-      <div class="summary-card error"><div class="value">${s.errors}</div><div class="label">Errors</div></div>
-      <div class="summary-card blocked"><div class="value">${s.blocked}</div><div class="label">Blocked</div></div>
-      <div class="summary-card skipped"><div class="value">${s.skipped}</div><div class="label">Skipped</div></div>
-      <div class="summary-card total"><div class="value">${s.omitted}</div><div class="label">Omitted</div></div>
+      <div class="summary-card total"><div class="value">${s.selected}</div><div class="label">Seleccionados</div></div>
+      <div class="summary-card pass"><div class="value">${s.passed}</div><div class="label">PASS</div></div>
+      <div class="summary-card fail"><div class="value">${s.failed}</div><div class="label">FAIL</div></div>
+      <div class="summary-card error"><div class="value">${s.errors}</div><div class="label">Errores</div></div>
+      <div class="summary-card blocked"><div class="value">${s.blocked}</div><div class="label">BLOCKED</div></div>
+      <div class="summary-card skipped"><div class="value">${s.skipped}</div><div class="label">SKIPPED</div></div>
+      <div class="summary-card total"><div class="value">${s.omitted}</div><div class="label">No ejecutados</div></div>
     </div>
 
     <section class="card-section">
-      <h2><span class="section-icon">📋</span> Test Cases</h2>
+      <h2><span class="section-icon">📋</span> Casos de prueba</h2>
       <div class="table-wrapper">
         <table>
           <thead>
             <tr>
-              <th>ID</th><th>Title</th><th>Status</th><th>Duration</th><th>Error</th><th>Motivo del bloqueo</th><th>Evidence</th>
+              <th>ID</th><th>Título</th><th>Estado</th><th>Duración</th><th>Error</th><th>Motivo del bloqueo</th><th>Evidencia</th>
             </tr>
           </thead>
           <tbody>
@@ -557,9 +604,14 @@ export function renderReportHtml(report: ExecutionReport, repoRoot: string, outD
     ${infraErrorsSection}
     ${evidenceIndexSection}
 
+    <section class="card-section">
+      <h2><span class="section-icon">🏁</span> Conclusión</h2>
+      <p class="conclusion-text">${escapeHtml(buildConclusion(r))}</p>
+    </section>
+
     <div class="footer">
-      Report ID: <span class="mono">${escapeHtml(r.report_id)}</span> ·
-      Generated: ${formatDate(r.generated_at)}
+      ID de reporte: <span class="mono">${escapeHtml(r.report_id)}</span> ·
+      Generado: ${formatDate(r.generated_at)}
     </div>
   </div>
 
@@ -573,10 +625,10 @@ export function renderReportHtml(report: ExecutionReport, repoRoot: string, outD
       const text = document.getElementById('theme-text');
       if (next === 'light') {
         icon.textContent = '☀️';
-        text.textContent = 'Light mode';
+        text.textContent = 'Modo claro';
       } else {
         icon.textContent = '🌙';
-        text.textContent = 'Dark mode';
+        text.textContent = 'Modo oscuro';
       }
     }
     // Set default theme

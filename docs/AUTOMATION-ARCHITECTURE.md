@@ -129,8 +129,8 @@ locator; **nunca** cambia Expected Results, **nunca** convierte FAIL en PASS y
 
 - El runner ejecuta las suites **demo aisladas** (app local `demo-qaa`) y las
   suites demo de auto-healing (app local `127.0.0.1:4174`). De los 11 TC de
-  negocio dcshoes, **TC-001 ya está portado** (`SUITE-dcshoes-tc001` /
-  `automation/specs/dcshoes/home.spec.ts`, solo navegación/lectura); los 10
+  negocio demo, **TC-001 ya está portado** (`SUITE-demo-qaa-web` /
+  `automation/specs/demo-web/site.spec.ts`, solo navegación/lectura); los 10
   restantes aún no se portan (validación de aplicación real, próxima etapa). Las
   suites automatizadas se asocian vía manifiesto (`test_case_id` ↔ spec).
 - Node v24.21.0 (canal oficial nodejs.org, per-user, sin privilegios). El PATH

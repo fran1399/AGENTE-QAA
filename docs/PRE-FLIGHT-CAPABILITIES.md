@@ -125,7 +125,7 @@ python qa/tools/preflight.py --requirements qa/tools/fixtures/preflight/requirem
 
 ```json
 {
-  "task": "TS-dcshoes-web",
+  "task": "TS-demo-web",
   "scope": "opcional; por defecto = task",
   "platform": "web | pwa | api | hybrid | native | static",
   "need": {

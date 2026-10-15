@@ -6,12 +6,9 @@ This repository contains a functional core for a multi-agent QA system designed 
 
 ## Core Principles
 
+### Garantías obligatorias (siempre)
 - NO EVIDENCE = NO CONFIRMED RESULT.
-- Always separate `expected`, `observed`, `evidence`, `conclusion`, and `confidence`.
-- Use confidence levels: `HIGH`, `MEDIUM`, `LOW`.
-- Validation must be proportional to risk.
-- Critical decisions must be able to receive an independent double-check.
-- The QA Reviewer/Challenger must actively question conclusions from the QA Lead.
+- Always separate `expected`, `observed`, `evidence`, `conclusion`, and `confidence` (HIGH/MEDIUM/LOW).
 - Never equate "tool finished without error" with "test passed" or "result validated".
 - Differentiate: `tool called` → `tool succeeded` → `result obtained` → `result validated`.
 - Never assert execution if it did not occur.
@@ -21,6 +18,16 @@ This repository contains a functional core for a multi-agent QA system designed 
 - Do not modify application code without explicit authorization.
 - QA logic must remain decoupled from execution adapters (e.g., Playwright).
 - MCP is not required for the core logic; it must remain disabled unless strictly justified.
+
+### Criterios de decisión (evaluar según contexto)
+- Validation must be proportional to risk.
+- Critical decisions must be able to receive an independent double-check.
+- The QA Reviewer/Challenger must actively question conclusions from the QA Lead.
+
+### Valores predeterminados (orientativos)
+- Effort is proportional to scope and risk (see Request Handling).
+- FAST is the default reporting mode (see Report Modes).
+- T0–T3 guide delegation effort (see `.opencode/agents/qa-lead.md`).
 
 ## Target Platforms (MVP)
 
@@ -54,6 +61,13 @@ Prepared for: API, Hybrid, Native.
 10. INDEPENDENT REVIEW
 11. RETEST / REGRESSION (when applicable)
 12. FINAL REPORT
+
+## Request Handling
+
+- Users express goals in everyday language («probá la página de X», «hacé un smoke test rápido», «revisá si funciona el buscador», «mostrame el reporte HTML»). The QA Lead interprets the objective and runs the fitting process; the user does not need to name agents, skills or report modes.
+- Ask for clarification only when an indispensable fact is missing (target, environment, credentials when Login is required, or a genuinely ambiguous scope); otherwise choose sensible defaults and state them briefly.
+- Effort is proportional to scope and risk: prioritize the essential checks of the requested scope, and add repetitions, cross-checks or extra reviews only when they resolve a concrete uncertainty or confirm a possible defect.
+- If a mandatory control (e.g., QA Reviewer) is unavailable, declare the limitation explicitly and keep the affected conclusions as NOT VERIFIED / INSUFFICIENT_EVIDENCE; never present it as ACCEPT.
 
 ## Failure Classification
 
@@ -132,8 +146,11 @@ The system communicates with the user in the **user's language**. This section i
 ## Report Modes
 
 - `REPORT_MODE: FAST` / `REPORT_MODE: DETAIL` (bare `FAST` / `DETAIL` accepted when the context is clear). Default: **FAST**. Generate only the requested mode.
-- Modes change presentation and depth of the report only: same Test Cases, results, Bugs, Risk, Evidence, Confidence, QA Reviewer and conclusion. BLOCKED / NOT VERIFIED are always preserved, and mandatory QA controls stay active in both modes.
+- Modes change presentation and depth of the report only: same executed checks, results, Bugs, Risk, Evidence, Confidence, QA Reviewer and conclusion. BLOCKED / NOT VERIFIED are always preserved, and mandatory QA controls stay active in both modes.
+- FAST opens with a plain-language conclusion (what was tested, what worked, what problems were found, what is unverified, and where the HTML report is when requested or generated); the technical detail follows, once and in order. DETAIL keeps the expanded technical analysis and explanations for deep investigations.
 - The type of testing (Smoke Test, Regression, etc.) depends on the Scope and objective given by the user, never on the report mode.
+- A single canonical report order/responsibility per section is shared by FAST, DETAIL, chat and the HTML report; FAST/DETAIL only choose sections and depth. Tests are coordinated proportionally to risk (T0-T3, see `.opencode/agents/qa-lead.md`).
+- The HTML report and the FAST chat summary are generated from the same consolidated model (`qa-report-model`): `python qa/tools/render_qa_report.py --model <model.json> --out <report.html>` (or `--summary`), so chat and HTML cannot contradict each other.
 - Templates and rules: `docs/REPORT-MODES.md`.
 
 ## Notes

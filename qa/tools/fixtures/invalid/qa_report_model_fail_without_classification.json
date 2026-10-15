@@ -1,0 +1,7 @@
+{
+  "report_model_id": "QRM-fixture-invalid",
+  "meta": { "title": "Fixture report model without FAIL classification" },
+  "results": [
+    { "id": "TC-FIX-1", "title": "Home loads", "status": "FAIL", "confidence": "HIGH" }
+  ]
+}

@@ -99,6 +99,7 @@ class ValidFixturesTest(unittest.TestCase):
         ("memory-record", "valid/memory_record.json"),
         ("auto-heal-record", "valid/auto_heal_record.json"),
         ("auto-heal-record", "valid/auto_heal_records.json"),
+        ("qa-report-model", "valid/qa_report_model.json"),
     ]
 
     def test_all_valid_fixtures_pass(self):
@@ -113,7 +114,7 @@ class ValidFixturesTest(unittest.TestCase):
     def test_registry_is_consistent(self):
         validator = vc.ContractValidator()
         contracts = validator.list_contracts()
-        self.assertEqual(len(contracts), 17)
+        self.assertEqual(len(contracts), 18)
         for name in contracts:
             cfg = validator.store.contracts[name]
             self.assertTrue(os.path.exists(os.path.join(vc.SCHEMA_DIR, cfg["schema"])))
@@ -144,6 +145,7 @@ class InvalidFixturesTest(unittest.TestCase):
         ("pre-flight-record", "preflight_availability_source_enum.json", "enum", "checks[0].availability_source"),
         ("auto-heal-record", "auto_heal_recovered_without_selector.json", "required", "selector_used"),
         ("exploratory-finding", "exploratory_confirmed_without_evidence.json", "required", "evidence"),
+        ("qa-report-model", "qa_report_model_fail_without_classification.json", "required", "results[0].classification"),
     ]
 
     def test_all_invalid_fixtures_fail_with_expected_reason(self):
@@ -269,10 +271,10 @@ class ExistingArtifactsTest(unittest.TestCase):
     """Compatibility: the artifacts already in qa/ must validate (or be flagged)."""
 
     CASES = [
-        ("qa/tests/dcshoes_tc.json", "test-case", 11),
-        ("qa/tests/dcshoes_risk.json", "risk-record", 4),
-        ("qa/bugs/dcshoes_bugs.json", "bug-record", 3),
-        ("qa/tests/dcshoes_execution_trace.json", "execution-trace", 13),
+        ("qa/tools/fixtures/valid/test_case.suite.json", "test-case", 1),
+        ("qa/tools/fixtures/valid/risk_record.json", "risk-record", 1),
+        ("qa/tools/fixtures/valid/bug_record_confirmed.json", "bug-record", 1),
+        ("qa/tools/fixtures/valid/execution_trace.json", "execution-trace", 1),
     ]
 
     def test_existing_artifacts_validate(self):
@@ -294,7 +296,11 @@ class ExistingArtifactsTest(unittest.TestCase):
     def test_bundle_of_qa_is_valid(self):
         bundle = vc.ContractValidator().validate_bundle([repo_relative("qa")])
         self.assertTrue(bundle.valid, [f.to_dict() for f in bundle.errors])
-        self.assertEqual(bundle.summary()["records"], 31)
+        self.assertEqual(bundle.summary()["records"], 0)
+
+    def test_report_model_hint_is_registered(self):
+        hints = vc.ContractValidator().store.hints
+        self.assertEqual(hints.get("report_model_id"), "qa-report-model")
 
 
 class RunnerArtifactsDetectionTest(unittest.TestCase):
