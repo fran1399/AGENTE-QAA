@@ -51,27 +51,17 @@
     <g>
       <rect x="64" y="262" width="132" height="36" rx="18" fill="#3b82f6" fill-opacity="0.12" stroke="#3b82f6" stroke-opacity="0.5"/>
       <circle cx="86" cy="280" r="4" fill="#34d399"/>
-      <text x="100" y="285" fill="#cfe4ff">MIT License</text>
+      <text x="100" y="285" fill="#cfe4ff">Licencia MIT</text>
     </g>
     <g>
-      <rect x="208" y="262" width="120" height="36" rx="18" fill="#3b82f6" fill-opacity="0.12" stroke="#3b82f6" stroke-opacity="0.5"/>
-      <circle cx="230" cy="280" r="4" fill="#38bdf8"/>
-      <text x="244" y="285" fill="#cfe4ff">Node 24.x</text>
+      <rect x="220" y="262" width="210" height="36" rx="18" fill="#3b82f6" fill-opacity="0.12" stroke="#3b82f6" stroke-opacity="0.5"/>
+      <circle cx="242" cy="280" r="4" fill="#38bdf8"/>
+      <text x="256" y="285" fill="#cfe4ff">8 agentes especializados</text>
     </g>
     <g>
-      <rect x="340" y="262" width="180" height="36" rx="18" fill="#3b82f6" fill-opacity="0.12" stroke="#3b82f6" stroke-opacity="0.5"/>
-      <circle cx="362" cy="280" r="4" fill="#34d399"/>
-      <text x="376" y="285" fill="#cfe4ff">Playwright 1.64.0</text>
-    </g>
-    <g>
-      <rect x="532" y="262" width="130" height="36" rx="18" fill="#3b82f6" fill-opacity="0.12" stroke="#3b82f6" stroke-opacity="0.5"/>
-      <circle cx="554" cy="280" r="4" fill="#f59e0b"/>
-      <text x="568" y="285" fill="#cfe4ff">8 agentes</text>
-    </g>
-    <g>
-      <rect x="674" y="262" width="150" height="36" rx="18" fill="#3b82f6" fill-opacity="0.12" stroke="#3b82f6" stroke-opacity="0.5"/>
-      <circle cx="696" cy="280" r="4" fill="#38bdf8"/>
-      <text x="710" y="285" fill="#cfe4ff">M-01 … M-06</text>
+      <rect x="454" y="262" width="170" height="36" rx="18" fill="#3b82f6" fill-opacity="0.12" stroke="#3b82f6" stroke-opacity="0.5"/>
+      <circle cx="476" cy="280" r="4" fill="#f59e0b"/>
+      <text x="490" y="285" fill="#cfe4ff">Web · PWA · API</text>
     </g>
   </g>
 
@@ -103,5 +93,5 @@
   </g>
 
   <line x1="64" y1="330" x2="1216" y2="330" stroke="#2b4a7a" stroke-opacity="0.5" stroke-width="1"/>
-  <text x="64" y="348" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="13" fill="#6d89ad">Riesgo -&gt; Diseno -&gt; Pre-flight -&gt; Test Data -&gt; Ejecucion -&gt; Evidencia -&gt; Revision -&gt; Consolidacion</text>
+  <text x="64" y="348" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="13" fill="#6d89ad">Análisis de riesgos → Diseño de pruebas → Ejecución con evidencia → Reportes verificables</text>
 </svg>
