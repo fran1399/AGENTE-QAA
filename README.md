@@ -4,8 +4,6 @@
 
 **Navegación:** [¿Qué es?](#que-es) · [Capacidades](#capacidades) · [Arquitectura](#arquitectura) · [Equipo](#equipo) · [Módulos](#modulos) · [Requisitos](#requisitos) · [Primeros pasos](#primeros-pasos) · [Comandos](#comandos) · [Estructura](#estructura) · [Modos de reporte](#modos-de-reporte) · [Documentación](#documentacion) · [Alcance](#alcance) · [Licencia](#licencia)
 
-**De un vistazo:** 8 agentes · módulos **M-01 … M-06 implementados** · **59** tests Playwright + **127** tests Python (unittest) · adapters **Playwright** (Web/PWA) y **api-testing** (API/HTTP) · MCP deshabilitado por defecto · Licencia **MIT**.
-
 ---
 
 <a name="que-es"></a>
