@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Playwright tests
+        run: npm test
+
+      - name: Python unit tests
+        run: |
+          python qa/tools/test_validate_contracts.py
+          python qa/tools/test_preflight.py
+          python qa/tools/test_data_verification.py
+          python qa/tools/test_report_generator.py
+          python qa/tools/test_render_qa_report.py
+
+      - name: Integration tests
+        run: npm run test:integration
+
+      - name: Demo suites (Web + API)
+        run: npm run demo
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: automation/.artifacts/playwright-report/
+          if-no-files-found: ignore
+
+      - name: Upload demo reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: demo-reports
+          path: |
+            automation/.runs/suite-demo-web/report.html
+            automation/.runs/suite-demo-web/report.json
+            automation/.runs/suite-demo-api/report.html
+            automation/.runs/suite-demo-api/report.json
+          if-no-files-found: ignore

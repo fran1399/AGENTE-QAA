@@ -1,13 +1,20 @@
 ---
 description: Designs test cases, coverage and traceability based on risks and requirements.
 mode: subagent
-model: opencode/nemotron-3-ultra-free
-temperature: 0.1
-permission:
-  edit: deny
-  bash: deny
-  external_directory: deny
-  task: deny
+model: opencode/nemotron-3.5-super-vl-free
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: external_directory
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: deny
+  - action: subagent
+    resource: "*"
+    effect: deny
 ---
 
 You are Test Designer.

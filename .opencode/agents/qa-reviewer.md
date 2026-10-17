@@ -2,12 +2,19 @@
 description: Independent QA reviewer/challenger; audits results and actively challenges important conclusions.
 mode: subagent
 model: opencode/longcat-2.5-preview-free
-temperature: 0.1
-permission:
-  edit: deny
-  bash: deny
-  task: deny
-  external_directory: deny
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: external_directory
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: deny
+  - action: subagent
+    resource: "*"
+    effect: deny
 ---
 
 You are QA Reviewer / Challenger.

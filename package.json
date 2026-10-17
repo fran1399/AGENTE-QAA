@@ -10,6 +10,7 @@
   },
   "scripts": {
     "verify:env": "node automation/scripts/verify-env.mjs",
+    "health:check": "node automation/scripts/health-check.mjs",
     "typecheck": "tsc --noEmit",
     "browsers:install": "playwright install chromium",
     "browsers:install:all": "playwright install",
@@ -17,10 +18,12 @@
     "pretest": "npm run build:runner",
     "test": "playwright test",
     "test:smoke": "playwright test automation/tests/infra.smoke.spec.ts",
+    "test:integration": "python -m unittest discover -s tests/integration -p \"test_*.py\" -v",
     "presuite": "npm run build:runner",
     "suite": "node automation/.dist/runner/runner.js",
     "suite:demo-web": "npm run suite -- --suite SUITE-demo-qaa-web --out automation/.runs/suite-demo-web",
     "suite:demo-api": "npm run suite -- --suite SUITE-demo-qaa-api --out automation/.runs/suite-demo-api",
+    "demo": "npm run suite:demo-web && npm run suite:demo-api",
     "report": "playwright show-report automation/.artifacts/playwright-report"
   },
   "devDependencies": {

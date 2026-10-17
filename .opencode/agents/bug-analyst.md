@@ -1,16 +1,23 @@
 ---
 description: Analyzes failures, evidence, reproducibility, severity/priority and likely cause without overreaching.
 mode: subagent
-model: opencode/nemotron-3-ultra-free
-temperature: 0.1
-permission:
-  edit: deny
-  external_directory: deny
-  bash:
-    "*": ask
-    "python qa/tools/validate_contracts.py*": allow
-    "py qa/tools/validate_contracts.py*": allow
-  task: deny
+model: opencode/nemotron-3.5-super-vl-free
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: external_directory
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: ask
+  - action: shell
+    resource: "python qa/tools/validate_contracts.py*"
+    effect: allow
+  - action: subagent
+    resource: "*"
+    effect: deny
 ---
 
 You are Bug Analyst.

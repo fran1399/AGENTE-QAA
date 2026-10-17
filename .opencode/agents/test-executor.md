@@ -1,34 +1,80 @@
 ---
 description: Executes tests in a controlled manner, uses Playwright when applicable, and captures verifiable evidence.
 mode: subagent
-model: opencode/nemotron-3.5-lightning-free
-temperature: 0.1
-permission:
-  edit: deny
-  external_directory: deny
-  bash:
-    "*": ask
-    "npx playwright *": allow
-    "pnpm exec playwright *": allow
-    "npm exec playwright *": allow
-    "yarn playwright *": allow
-    "bunx playwright *": allow
-    "npm test*": allow
-    "npm run test*": allow
-    "pnpm test*": allow
-    "pnpm run test*": allow
-    "yarn test*": allow
-    "bun test*": allow
-    "npm run build:runner*": allow
-    "npm run suite*": allow
-    "node automation/.dist/runner/runner.js*": allow
-    "git status*": allow
-    "git diff*": allow
-    "python qa/tools/validate_contracts.py*": allow
-    "py qa/tools/validate_contracts.py*": allow
-    "python qa/tools/preflight.py*": allow
-    "py qa/tools/preflight.py*": allow
-  task: deny
+model: opencode/nemotron-3.5-super-vl-free
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: external_directory
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: ask
+  - action: shell
+    resource: "npx playwright *"
+    effect: allow
+  - action: shell
+    resource: "pnpm exec playwright *"
+    effect: allow
+  - action: shell
+    resource: "npm exec playwright *"
+    effect: allow
+  - action: shell
+    resource: "yarn playwright *"
+    effect: allow
+  - action: shell
+    resource: "bunx playwright *"
+    effect: allow
+  - action: shell
+    resource: "npm test*"
+    effect: allow
+  - action: shell
+    resource: "npm run test*"
+    effect: allow
+  - action: shell
+    resource: "pnpm test*"
+    effect: allow
+  - action: shell
+    resource: "pnpm run test*"
+    effect: allow
+  - action: shell
+    resource: "yarn test*"
+    effect: allow
+  - action: shell
+    resource: "bun test*"
+    effect: allow
+  - action: shell
+    resource: "npm run build:runner*"
+    effect: allow
+  - action: shell
+    resource: "npm run suite*"
+    effect: allow
+  - action: shell
+    resource: "node automation/.dist/runner/runner.js*"
+    effect: allow
+  - action: shell
+    resource: "git status*"
+    effect: allow
+  - action: shell
+    resource: "git diff*"
+    effect: allow
+  - action: shell
+    resource: "python qa/tools/validate_contracts.py*"
+    effect: allow
+  - action: shell
+    resource: "py qa/tools/validate_contracts.py*"
+    effect: allow
+  - action: shell
+    resource: "python qa/tools/preflight.py*"
+    effect: allow
+  - action: shell
+    resource: "py qa/tools/preflight.py*"
+    effect: allow
+  - action: subagent
+    resource: "*"
+    effect: deny
 ---
 
 You are Test Executor.

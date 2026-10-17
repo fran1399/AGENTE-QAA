@@ -1,15 +1,16 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "default_agent": "qa-lead",
-  "subagent_depth": 1,
-  "permission": {
-    "external_directory": "deny"
-  },
+  "permissions": [
+    { "action": "external_directory", "resource": "*", "effect": "deny" }
+  ],
   "mcp": {
-    "context7": {
-      "type": "remote",
-      "url": "https://mcp.context7.com/mcp",
-      "enabled": false
+    "servers": {
+      "context7": {
+        "type": "remote",
+        "url": "https://mcp.context7.com/mcp",
+        "disabled": true
+      }
     }
   }
 }

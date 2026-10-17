@@ -94,13 +94,13 @@ Use `INSUFFICIENT_EVIDENCE`, `BLOCKED`, or `NOT_VERIFIED` when appropriate.
 
 Check availability with `opencode models`. Do not invent model IDs.
 
-- qa-lead: opencode/nemotron-3-ultra-free
-- test-designer: opencode/nemotron-3-ultra-free
+- qa-lead: opencode/nemotron-3.5-super-vl-free
+- test-designer: opencode/nemotron-3.5-super-vl-free
 - exploratory-qa: opencode/mimo-v2.6-flash-free
-- risk-analyst: opencode/nemotron-3-ultra-free
-- test-executor: opencode/nemotron-3.5-lightning-free
-- test-data: opencode/nemotron-3-ultra-free
-- bug-analyst: opencode/nemotron-3-ultra-free
+- risk-analyst: opencode/nemotron-3.5-super-vl-free
+- test-executor: opencode/nemotron-3.5-super-vl-free
+- test-data: opencode/nemotron-3.5-super-vl-free
+- bug-analyst: opencode/nemotron-3.5-super-vl-free
 - qa-reviewer: opencode/longcat-2.5-preview-free
 
 ## Security
@@ -159,3 +159,5 @@ The system communicates with the user in the **user's language**. This section i
 - MCP integrations are disabled by default; do not enable unless required by the target application.
 - This core is infrastructure-only (no example app, no CI/CD, no code generation).
 - Contracts are machine-validated with JSON Schemas in `qa/schema/` and the validator `qa/tools/validate_contracts.py` (Python 3 stdlib). Validation is a read-only gate: it never transforms a result or verifies the truthfulness of evidence. See `docs/CONTRACTS-VALIDATION.md`.
+- Health check: `node automation/scripts/health-check.mjs` verifies agents, skills, tools and configuration.
+- Error handling patterns: `.opencode/skills/error-handling/SKILL.md`.
