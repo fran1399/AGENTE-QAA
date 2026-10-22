@@ -1995,3 +1995,71 @@ test('m03 playwright exit: unexplained non-zero is not success; normal fail/succ
     }
   }
 });
+
+// M-02 adapter: --junit is opt-in and additive. The XML is derived from the
+// same report.json, so counters and identifiers must match the source report.
+const JUNIT_INSPECT = [
+  'import json, sys, xml.etree.ElementTree as ET',
+  'root = ET.parse(sys.argv[1]).getroot()',
+  'suite = root.find("testsuite")',
+  'print(json.dumps({',
+  '  "root": root.tag,',
+  '  "tests": int(root.get("tests")),',
+  '  "failures": int(root.get("failures")),',
+  '  "errors": int(root.get("errors")),',
+  '  "skipped": int(root.get("skipped")),',
+  '  "timestamp": suite.get("timestamp") if suite is not None else None,',
+  '  "names": [tc.get("name") for tc in root.iter("testcase")],',
+  '}))',
+].join('\n');
+
+test('junit: --junit exports valid XML consistent with report.json and stays opt-in', async () => {
+  test.setTimeout(120_000);
+  const out = runDir('junit');
+  const off = runDir('junit-off');
+  try {
+    const res = await runRunner(['--suite', API_SUITE, '--out', out, '--junit']);
+    expect(res.code, `runner exit 0 expected: ${res.stdout}\n${res.stderr}`).toBe(0);
+    expect(existsSync(join(out, 'junit.xml')), 'junit.xml must exist when --junit is passed').toBe(true);
+    expect(existsSync(join(out, 'report.json')), 'report.json must still be generated').toBe(true);
+    expect(existsSync(join(out, 'report.html')), 'report.html must still be generated').toBe(true);
+
+    const parsed = await runPython(['-c', JUNIT_INSPECT, join(out, 'junit.xml')]);
+    expect(parsed.code, `junit.xml must be well-formed XML: ${parsed.stderr}`).toBe(0);
+    const junit = JSON.parse(parsed.stdout) as {
+      root: string;
+      tests: number;
+      failures: number;
+      errors: number;
+      skipped: number;
+      timestamp: string | null;
+      names: string[];
+    };
+    const report = readJson<{
+      started_at: string;
+      summary: { failed: number; errors: number; blocked: number; skipped: number };
+      cases: Array<{ test_case_id: string; status: string }>;
+      infrastructure_errors?: string[];
+    }>(join(out, 'report.json'));
+    const infraErrors = (report.infrastructure_errors ?? []).length;
+
+    expect(junit.root).toBe('testsuites');
+    expect(junit.tests).toBe(report.cases.length + report.summary.errors + infraErrors);
+    expect(junit.failures).toBe(report.summary.failed);
+    expect(junit.errors).toBe(report.summary.errors + infraErrors);
+    expect(junit.skipped).toBe(report.summary.blocked + report.summary.skipped);
+    expect(junit.timestamp).toBe(report.started_at);
+    expect(junit.names).toHaveLength(report.cases.length);
+    for (const c of report.cases) {
+      expect(junit.names.some((n) => n.startsWith(`${c.test_case_id} `)), `missing JUnit case for ${c.test_case_id}`).toBe(true);
+    }
+
+    // Opt-in: without the flag, the runner keeps producing exactly the previous artifacts.
+    const plain = await runRunner(['--suite', API_SUITE, '--out', off, '--tc', 'TC-DEMO-API-1']);
+    expect(plain.code, `runner exit 0 expected: ${plain.stdout}\n${plain.stderr}`).toBe(0);
+    expect(existsSync(join(off, 'junit.xml')), 'junit.xml must not be created without --junit').toBe(false);
+  } finally {
+    rmSync(out, { recursive: true, force: true });
+    rmSync(off, { recursive: true, force: true });
+  }
+});

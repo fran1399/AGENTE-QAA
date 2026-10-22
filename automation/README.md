@@ -34,6 +34,7 @@ controlada de locators) y los **reportes de ejecución** (M-02, `report.json` +
    │  ├─ config.ts            # config Playwright del runner (JSON reporter → results.raw.json)
    │  ├─ support.ts           # helpers de specs: targetUrl(), recordAssertion(), attachAssertions()
    │  ├─ report.ts            # M-02: genera report.json + report.html por corrida
+   │  ├─ junit.ts             # M-02 (adapter): exporta junit.xml desde el mismo ExecutionReport
    │  ├─ sqlite-adapter.ts    # M-06: adaptador SQLite read-only (node:sqlite)
    │  └─ tsconfig.json        # build NodeNext → automation/.dist
    ├─ manifests/              # suites: demo (SUITE-demo-qaa-web/api)
@@ -51,8 +52,9 @@ controlada de locators) y los **reportes de ejecución** (M-02, `report.json` +
    │  └─ demo-app/index.html  # app demo (productos, carrito, data-testid)
    ├─ tests/                  # pruebas de infraestructura (NO son Test Cases de negocio)
    │  ├─ infra.smoke.spec.ts  # smoke base (web + api con servidor efímero)
-   │  ├─ runner.infra.spec.ts # 30 tests seriales: M-03 (9) + M-05 (6) + M-02 (8) + M-06 (7)
-   │  └─ sqlite-adapter.spec.ts # 23 tests M-06 (SQLite read-only)
+   │  ├─ runner.infra.spec.ts # 33 tests seriales: M-03 + M-05 + M-02 (incl. JUnit) + M-06
+   │  ├─ junit.spec.ts        # 8 tests unitarios del exportador JUnit XML (M-02)
+   │  └─ sqlite-adapter.spec.ts # 25 tests M-06 (SQLite read-only)
    └─ .artifacts/             # salida de Playwright (ignorada; no es evidencia QA)
 ```
 
@@ -71,13 +73,14 @@ solo los artefactos de negocio curados.
 | `npm run verify:env` | Verifica runtime, dependencias, navegador y lockfile (read-only). |
 | `npm run browsers:install` | Instala el navegador Chromium. |
 | `npm run build:runner` | Compila el runner: `tsc -p automation/runner/tsconfig.json`. |
-| `npm test` | `pretest` (build) + toda la suite de Playwright (2 smoke + 32 runner.infra + 25 sqlite-adapter = 59 tests en 3 archivos). |
+| `npm test` | `pretest` (build) + toda la suite de Playwright (2 smoke + 33 runner.infra + 8 junit + 25 sqlite-adapter = 68 tests en 4 archivos). |
 | `npm run test:smoke` | Ejecuta solo la prueba técnica de infraestructura. |
 | `npm run typecheck` | `tsc --noEmit` sobre config + specs + pruebas. |
 | `npm run suite:demo-web` | Corrida demo Web sin IA (out: `automation/.runs/suite-demo-web`). |
 | `npm run suite:demo-api` | Corrida demo API sin IA (out: `automation/.runs/suite-demo-api`). |
 | `npm run suite -- --suite SUITE-heal-demo-off\|observe\|hc\|hc-fail [--autoheal-store <path>]` | Suites demo M-05; con `--autoheal-store` se comparte el store de reutilización entre corridas. |
 | `npm run suite -- --suite <id> [--tc <id>] [--out <dir>] [--manifest <path>]` | Runner genérico (exit 0/1/2/3). |
+| `npm run suite -- --suite <id> --junit [path]` | Además de `report.json`/`report.html`, exporta JUnit XML (default: `<out>/junit.xml`). Opt-in; no reemplaza los reportes existentes. |
 | `npm run report` | Abre el reporte HTML generado. |
 
 ### Ejecuciones de proyectos externos
@@ -95,6 +98,21 @@ npm run suite -- --suite SUITE-demo-qaa-web --out ../agente-qaa-runs/demo-web/20
 ```
 
 > **Nota:** `--out` permite elegir el destino, pero no configura automáticamente ese comportamiento. Cada ejecución debe especificar la ruta deseada.
+
+### JUnit XML (opcional)
+
+```bash
+npm run suite -- --suite SUITE-demo-qaa-web --junit
+# → reports: automation/.runs/suite-demo-web/junit.xml
+
+npm run suite -- --suite SUITE-demo-qaa-web --out ../runs/demo --junit ../runs/demo/junit.xml
+```
+
+`junit.xml` se deriva del mismo `ExecutionReport` que `report.json`/`report.html`:
+PASS → `<testcase>`; FAIL → `<failure type="FAIL">` (sin clasificar); BLOCKED/SKIPPED
+→ `<skipped>`; errores de ejecución → `<error>` en casos sintéticos `*.suite-level`.
+No reemplaza los reportes existentes y no forma parte del bundle M-01 (solo
+descubre `*.json`). Correspondencia completa: `docs/RUNNER-M03.md` §5.1.
 
 Detalle del runner (manifiesto, exit codes, artefactos, evidence): ver
 `docs/RUNNER-M03.md`.

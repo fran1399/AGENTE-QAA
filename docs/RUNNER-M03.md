@@ -5,9 +5,9 @@
 | Estado | **IMPLEMENTADO (2026-10-09)** |
 | Motor | **Playwright Test** (Web + API), sin Axios/Newman en esta etapa |
 | Base | Node.js 24.x + TypeScript (`automation/`) |
-| Evidencia | Corridas reales (abajo) + `automation/tests/runner.infra.spec.ts` (30 tests: 9 M-03 + 6 M-05 + 8 M-02 + 7 M-06) + `automation/tests/sqlite-adapter.spec.ts` (23 tests M-06) |
+| Evidencia | Corridas reales (abajo) + `automation/tests/runner.infra.spec.ts` (33 tests: M-03, M-05, M-02 —incl. JUnit— y M-06) + `automation/tests/junit.spec.ts` (8 tests del exportador) + `automation/tests/sqlite-adapter.spec.ts` (25 tests M-06) |
 | Validación | M-01 (`qa/tools/validate_contracts.py`) y M-04 (`qa/tools/preflight.py`) intactos y usados |
-| Reportes | **M-02**: `report.json` + `report.html` por corrida (contrato `execution-report`) |
+| Reportes | **M-02**: `report.json` + `report.html` por corrida (contrato `execution-report`) + JUnit XML opcional (`--junit`, §5.1) |
 | Datos | **M-06**: verificaciones SQLite de solo lectura (`data_verification.json`, contrato `data-verification`) |
 
 ## 1. Propósito
@@ -126,13 +126,14 @@ Reglas:
 
 ```bash
 npm run build:runner                 # tsc -p automation/runner/tsconfig.json → automation/.dist
-npm test                             # pretest build + 59 tests (2 smoke + 32 runner.infra + 25 sqlite-adapter)
+npm test                             # pretest build + 68 tests (2 smoke + 33 runner.infra + 8 junit + 25 sqlite-adapter)
 npm run suite -- --suite SUITE-demo-qaa-web            # out por defecto: automation/.runs/<suite>/<run>
 npm run suite -- --suite SUITE-demo-qaa-api
 npm run suite -- --suite SUITE-demo-qaa-web --tc TC-DEMO-WEB-1   # selección
 npm run suite -- --manifest <path> --suite <id>       # manifiesto explícito (temp en tests)
 npm run suite:demo-web              # con out fijo: automation/.runs/suite-demo-web
 npm run suite:demo-api
+npm run suite -- --suite SUITE-demo-qaa-web --junit   # + <out>/junit.xml (opt-in)
 ```
 
 CLI del runner (`node automation/.dist/runner/runner.js`):
@@ -145,6 +146,7 @@ CLI del runner (`node automation/.dist/runner/runner.js`):
 | `--out <dir>` | Directorio de corrida (default: `automation/.runs/<suite_id>/<run_id>`, **fuera de `qa/`** para no alterar el bundle canónico M-01) |
 | `--no-preflight` | **debug only**: omite el gate (nunca para corridas QA) |
 | `--python <exe>` | Intérprete Python del pre-flight (default: `python`) |
+| `--junit [path]` | Exporta además JUnit XML (default: `<out>/junit.xml`). Opt-in; no altera `report.json`/`report.html`. |
 
 ### Códigos de salida
 
@@ -172,6 +174,7 @@ adicional (no se inventa una clasificación).
 | `preflight.requirements.json` | requirements enviados al detector (trazabilidad) | — (operacional) |
 | `results.raw.json` | salida cruda del JSON reporter de Playwright | — (operacional) |
 | `summary.json` | resumen de la corrida (counters, duración, `playwright_exit_code`, `infrastructure_errors`) | — (operacional) |
+| `junit.xml` | exportación JUnit XML de la corrida (solo con `--junit`; ver §5.1) | — (operacional; M-01 solo descubre `*.json`) |
 | `evidence/<TC>/*` | evidencia promovida por TC (ver §6) | — |
 
 Cada trace añade campos aditivos (permitidos por `additionalProperties` del
@@ -194,6 +197,35 @@ contrato): `test_case_id`, `title`, `status`, `app`, `platform`, `spec`,
   "result_validated": "Validated against Expected Result with 11 assertion(s); evidence attached" }
 ```
 
+### 5.1 JUnit XML (`--junit`, opcional)
+
+Se genera **solo** si se pasa `--junit [path]` (default `<out>/junit.xml`) y se
+deriva del mismo `ExecutionReport` que `report.json`/`report.html`; nunca
+re-ejecuta, reinterpreta ni clasifica la corrida. Es un artefacto **operacional**
+(como `report.html`): M-01 solo descubre `*.json`, así que no entra en el bundle.
+
+| Modelo AGENTE-QAA | JUnit XML |
+| --- | --- |
+| `case.status = PASS` | `<testcase>` sin `failure`/`error`/`skipped` |
+| `case.status = FAIL` | `<failure type="FAIL" message="…">` con el mensaje real; **no** es un Bug confirmado |
+| `case.status = BLOCKED` | `<skipped message="BLOCKED: …">` (motivo del pre-flight) |
+| `case.status = SKIPPED` | `<skipped message="…">` |
+| `infrastructure_errors[]` | `<error type="INFRASTRUCTURE">` en un caso sintético `INFRASTRUCTURE-ERROR-n` (`classname="<suite>.suite-level"`) |
+| `summary.errors` (data verification) | `<error type="DATA_VERIFICATION">` en casos sintéticos `DATA-VERIFICATION-ERROR-n` |
+| `case.duration_ms` | `time` en segundos con 3 decimales |
+| `run_id`, `report_id`, `app`, `platform`, `overall_status`, `preflight`, `auto_healing.*` | `<properties>` del `<testsuite>` |
+| `test_case_id` + `title` | `name="<TC> <title>"`, `classname="<suite_id>"`, `file="<spec>"` |
+| `case.evidence[]`, `case.auto_healing` | texto de `<system-out>` del caso |
+
+Contadores derivados de los mismos datos: `tests` = casos + errores sintéticos;
+`failures` = FAIL; `skipped` = BLOCKED + SKIPPED; `errors` = infraestructura +
+data verification. Los casos sintéticos representan errores **de ejecución** de la
+suite, nunca Test Cases de producto, y conservan la distinción PASS/FAIL/ERROR.
+
+Los mensajes se escapan (`& < > " '`), se eliminan los caracteres inválidos para
+XML 1.0 y los códigos ANSI que Playwright embebe en sus errores; los valores
+ausentes se omiten (nunca se inventan).
+
 ## 6. Evidence
 
 `<out>/evidence/<test_case_id>/` (PASS) y `…/` + `trace.zip` + screenshots (FAIL):
@@ -211,7 +243,7 @@ Los specs adjuntan evidencia vía `automation/runner/support.ts`:
 
 ```bash
 npm test
-# → 59 passed (2 infra.smoke + 32 runner.infra + 25 sqlite-adapter)     [1 corrida, sin intervención IA]
+# → 68 passed (2 infra.smoke + 33 runner.infra + 8 junit + 25 sqlite-adapter)  [1 corrida, sin intervención IA]
 
 npm run suite:demo-web
 # pre-flight: READY
@@ -242,7 +274,7 @@ El runner re-ejecuta **idéntico** resultado (mismos TCs, mismos status) sin
 ninguna intervención de modelo — verificado en `runner.infra.spec.ts`
 ("reuse: a saved automation re-runs without AI intervention").
 
-## 8. Pruebas de infraestructura (`automation/tests/runner.infra.spec.ts`, 30 tests)
+## 8. Pruebas de infraestructura (`automation/tests/runner.infra.spec.ts`, 33 tests)
 
 1. Web PASS con asociación a `test_case_id` y evidence real.
 2. API PASS (fixture `request` de Playwright, sin Axios/Newman).
@@ -310,7 +342,7 @@ M-06 (verificación de datos SQLite, read-only), 7 tests adicionales:
     cross-association`: la asociación explícita por `test_case_id` evita
     cruces entre TC-1 y TC-10.
 
-> Los 30 tests son **infraestructura ejecutable** del runner; no son Test Cases de
+> Los 33 tests son **infraestructura ejecutable** del runner; no son Test Cases de
 > negocio. Los Test Cases de las suites de auto-healing son 12, declarados en los
 > manifiestos `SUITE-heal-demo-*`.
 

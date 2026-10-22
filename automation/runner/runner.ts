@@ -42,6 +42,7 @@ import {
 } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { generateReports, type ReportInput } from './report.js';
+import { writeJUnitXml } from './junit.js';
 import { executeDataVerification, type DataVerificationRequest } from './sqlite-adapter.js';
 
 const HERE = fileURLToPath(new URL('.', import.meta.url)); // <root>/automation/.dist/runner/
@@ -142,6 +143,8 @@ interface RunnerArgs {
   noPreflight: boolean;
   python: string;
   autohealStore?: string;
+  junit: boolean;
+  junitPath?: string;
   help: boolean;
 }
 
@@ -170,7 +173,7 @@ function fail(message: string, code: number): never {
 }
 
 function parseArgs(argv: string[]): RunnerArgs {
-  const args: RunnerArgs = { tc: [], noPreflight: false, python: 'python', help: false };
+  const args: RunnerArgs = { tc: [], noPreflight: false, python: 'python', junit: false, help: false };
   for (let i = 0; i < argv.length; i += 1) {
     const a = argv[i];
     switch (a) {
@@ -201,6 +204,16 @@ function parseArgs(argv: string[]): RunnerArgs {
       case '--autoheal-store':
         args.autohealStore = argv[++i];
         break;
+      case '--junit': {
+        // Opt-in export. `--junit` alone writes <out>/junit.xml; an explicit
+        // path may follow (any value not starting with `--`).
+        args.junit = true;
+        const next = argv[i + 1];
+        if (next !== undefined && !next.startsWith('--')) {
+          args.junitPath = argv[++i];
+        }
+        break;
+      }
       default:
         fail(`unknown argument: ${a}`, EXIT_USAGE);
     }
@@ -222,6 +235,8 @@ Options:
   --python <exe>        Python executable used for the pre-flight detector (default: python)
   --autoheal-store <p>  Persistent auto-healing reuse store (M-05) shared across runs.
                         Default: <out>/autoheal_store.json (per-run, no cross-run reuse)
+  --junit [path]        Also export JUnit XML (default: <out>/junit.xml). Opt-in:
+                        report.json/report.html are always generated and never replaced.
   -h, --help            Show this help
 
 Exit codes:
@@ -794,11 +809,16 @@ function writeExecutionReports(
   traces: Record<string, unknown>[],
   infraErrors: string[] = [],
   heal?: AutoHealStats,
+  junitPath?: string,
 ): void {
   const input = buildReportInput(manifest, runId, outDir, startedAt, overallStatus, counts, preflightResult, blockedReasons, traces, infraErrors, heal);
-  const { json, html } = generateReports(outDir, input, REPO_ROOT);
+  const { json, html, report } = generateReports(outDir, input, REPO_ROOT);
   console.log(`reports: ${normPath(relative(REPO_ROOT, json))}`);
   console.log(`reports: ${normPath(relative(REPO_ROOT, html))}`);
+  if (junitPath) {
+    const junit = writeJUnitXml(junitPath, report);
+    console.log(`reports: ${normPath(relative(REPO_ROOT, junit))}`);
+  }
 }
 
 // -- M-05 auto-healing enrichment ----------------------------------------------//
@@ -1031,6 +1051,9 @@ async function main(): Promise<number> {
   // must keep discovering only the curated business artifacts. Run
   // dirs are validated individually with `--bundle <out>`.
   const outDir = resolve(args.out ?? join(REPO_ROOT, 'automation', '.runs', manifest.suite_id, runId));
+  // M-02 adapter: JUnit XML is opt-in (`--junit [path]`) and derives from the
+  // same ExecutionReport as report.json/report.html. No flag -> no new file.
+  const junitPath = args.junit ? resolve(args.junitPath ?? join(outDir, 'junit.xml')) : undefined;
   // M-05: mode from the manifest need (OFF by default). The store defaults to
   // <out>/autoheal_store.json (per-run); --autoheal-store opts into cross-run
   // reuse. OFF never touches the store (M-03 only-writes-under-<out> guarantee).
@@ -1076,7 +1099,7 @@ async function main(): Promise<number> {
         });
         writeExecutionReports(outDir, manifest, runId, startedAt, 'BLOCKED', {
           selected: selected.length, passed: 0, failed: 0, errors: 0, skipped: 0, blocked: selected.length,
-        }, preflightResult, causes.map((c) => String(c)), traces);
+        }, preflightResult, causes.map((c) => String(c)), traces, [], undefined, junitPath);
         return EXIT_PREFLIGHT_BLOCKED;
       }
     }
@@ -1167,7 +1190,7 @@ async function main(): Promise<number> {
       errors: dataVerifications.errors,
       skipped: mapped.skipped,
       blocked: 0,
-    }, preflightResult, [], traces, infrastructureErrors, healStats);
+    }, preflightResult, [], traces, infrastructureErrors, healStats, junitPath);
     console.log(`run ${runId}: ${mapped.passed} PASS / ${mapped.failed} FAIL / ${mapped.skipped} SKIPPED (playwright exit ${pwCode})`);
     if (dataVerifications.results.length > 0) {
       console.log(`data verifications: ${dataVerifications.passed} PASS / ${dataVerifications.failed} FAIL / ${dataVerifications.errors} ERROR`);

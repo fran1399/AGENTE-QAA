@@ -148,10 +148,17 @@ npm run typecheck          # tsc --noEmit
 npm run build:runner       # compila el runner M-03 -> automation/.dist
 ```
 
+**Reportes de una corrida**
+
+```bash
+npm run suite -- --suite <suite_id>                 # report.json + report.html en <out>
+npm run suite -- --suite <suite_id> --junit [path]  # además JUnit XML (default <out>/junit.xml)
+```
+
 **Tests del runner (Playwright)**
 
 ```bash
-npm test                   # 59 tests: infra.smoke (2) + runner.infra (32) + sqlite-adapter (25)
+npm test                   # 68 tests: infra.smoke (2) + runner.infra (33) + junit (8) + sqlite-adapter (25)
 npm run test:smoke         # solo el smoke de infraestructura
 ```
 
