@@ -21,7 +21,11 @@ export default defineConfig({
   testDir: repoRoot,
   outputDir: join(out, 'pw'),
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0,
+  // One execution per Test Case. An in-run retry would re-execute side effects
+  // and duplicate M-05 evidence (the store written by attempt 1 turns attempt 2
+  // into REUSED); the raw report keeps only the last attempt, so a retried PASS
+  // would also be indistinguishable from a first-try PASS.
+  retries: 0,
   workers: process.env.CI ? 1 : undefined,
   timeout: 30_000,
   expect: { timeout: 5_000 },
